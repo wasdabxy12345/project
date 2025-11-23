@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+<h2>Admin Dashboard</h2>
+
+<ul>
+    <li><a th:href="@{/admin/manageArtists}">Manage Artists</a></li>
+    <li><a th:href="@{/admin/manageCustomers}">Manage Customers</a></li>
+    <li><a th:href="@{/admin/bookings}">View All Bookings</a></li>
+    <li><a th:href="@{/admin/reviews}">View All Reviews</a></li>
+    <li><a th:href="@{/admin/artist-approval}">Artist Approval</a></li>
+    <li><a th:href="@{/admin/feedback}">View All Feedback</a></li>
+</ul>
+
+</body>
+</html>

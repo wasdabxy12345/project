@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Details</title>
+</head>
+<body>
+
+<h2>Artist Details</h2>
+
+<p><strong>ID:</strong> <span th:text="${artist.id}"></span></p>
+<p><strong>Name:</strong> <span th:text="${artist.name}"></span></p>
+<p><strong>Email:</strong> <span th:text="${artist.email}"></span></p>
+<p><strong>Category:</strong> <span th:text="${artist.category}"></span></p>
+<p><strong>Status:</strong> <span th:text="${artist.status}"></span></p>
+
+<hr>
+
+<h3>Reviews from Customers</h3>
+
+<table border="1" padding="5" cellspacing="0">
+	<thead>
+		<tr>
+		    <th>Review ID</th>
+            <th>Customer ID</th>
+            <th>Rating</th>
+            <th>Comment</th>
+		</tr>
+	</thead>
+	
+	<tbody>
+        <tr th:if="${#lists.isEmpty(reviews)}">
+            <td colspan="4" style="text-align:center;">No reviews available for this artist.</td>
+       	</tr>
+       	
+       	<tr th:each="rev : ${reviews}">
+            <td th:text="${rev.id}"></td>
+            <td th:text="${rev.customerId}"></td>
+            <td th:text="${rev.rating}"></td>
+            <td th:text="${rev.comment}"></td>
+		</tr>
+	</tbody>
+</table>
+
+</body>
+</html>

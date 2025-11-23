@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>View All Bookings</title>
+</head>
+<body>
+
+<h2>All Bookings</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Booking ID</th>
+            <th>Customer Name</th>
+            <th>Artist Name</th>
+            <th>Date</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Placeholder row -->
+        <tr>
+            <td>1</td>
+            <td>Customer A</td>
+            <td>Artist X</td>
+            <td>2025-01-01</td>
+            <td>Confirmed</td>
+        </tr>
+
+        <!-- Thymeleaf dynamic rows later:
+        <tr th:each="booking : ${bookings}">
+            <td th:text="${booking.id}"></td>
+            <td th:text="${booking.customerName}"></td>
+            <td th:text="${booking.artistName}"></td>
+            <td th:text="${booking.date}"></td>
+            <td th:text="${booking.status}"></td>
+        </tr>
+        -->
+    </tbody>
+</table>
+
+</body>
+</html>

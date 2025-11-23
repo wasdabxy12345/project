@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Login</title>
+</head>
+<body>
+
+<h2>Artist Login</h2>
+
+<div th:if="${error}">
+    <p th:text="${error}" style="color:red;"></p>
+</div>
+
+<form th:action="@{/artist/login}" th:object="${artistLogin}" method="post">
+
+    <label>Email:</label><br>
+    <input type="email" th:field="*{email}" required><br><br>
+
+    <label>Password:</label><br>
+    <input type="password" th:field="*{password}" required><br><br>
+
+    <button type="submit">Login</button>
+</form>
+
+</body>
+</html>

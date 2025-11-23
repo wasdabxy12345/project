@@ -1,0 +1,25 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "customFileOrder.rules": {
+        "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\java\\com\\example\\demo\\controller": {
+            "order": [
+                "HomeController.java",
+                "AdminController.java",
+                "ArtistController.java",
+                "CustomerController.java"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\resources\\templates\\admin": {
+            "order": [
+                "manageArtists.html",
+                "viewArtist.html",
+                "manageCustomers.html",
+                "viewCustomer.html",
+                "viewBookings.html"
+            ],
+            "type": "manual"
+        }
+    }
+}

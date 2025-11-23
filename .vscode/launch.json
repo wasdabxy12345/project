@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "RegistrationExample2Application",
+            "request": "launch",
+            "mainClass": "com.example.demo.RegistrationExample2Application",
+            "projectName": "ArtistHub2"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-Artisthub3Application<artisthub3>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.tops.artisthub3.Artisthub3Application",
+            "projectName": "artisthub3",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

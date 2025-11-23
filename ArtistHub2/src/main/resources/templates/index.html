@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Artist Hub - Home</title>
+</head>
+<body>
+
+<h2>Welcome to Artist Hub</h2>
+
+<h3>Admin</h3>
+<ul>
+    <li><a th:href="@{/admin/login}">Admin Login</a></li>
+</ul>
+
+<h3>Artist</h3>
+<ul>
+    <li><a th:href="@{/artist/register}">Artist Registration</a></li>
+    <li><a th:href="@{/artist/login}">Artist Login</a></li>
+</ul>
+
+<h3>Customer</h3>
+<ul>
+    <li><a th:href="@{/customer/register}">Customer Registration</a></li>
+    <li><a th:href="@{/customer/login}">Customer Login</a></li>
+</ul>
+
+</body>
+</html>
