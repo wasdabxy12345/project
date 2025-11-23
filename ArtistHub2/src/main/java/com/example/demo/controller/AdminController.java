@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.Model.Artist;
+import com.example.demo.Model.Booking;
 import com.example.demo.Model.Customer;
 import com.example.demo.Model.Review;
 import com.example.demo.repository.ArtistRepository;
@@ -128,8 +130,17 @@ public class AdminController {
 	}
 
 	@GetMapping("/bookings")
-	public String viewAllBookings() {
-		return "admin/viewBookings";
-	}
+    public String viewAllBookings(Model model) {
 
+        // Dummy dynamic list (Replace with database later)
+        List<Booking> bookings = Arrays.asList(
+                new Booking(1, "Customer A", "Artist X", "2025-01-01", "Confirmed"),
+                new Booking(2, "Customer B", "Artist Y", "2025-02-12", "Pending"),
+                new Booking(3, "Customer C", "Artist Z", "2025-03-22", "Cancelled")
+        );
+
+        model.addAttribute("bookings", bookings);
+
+        return "admin/viewBookings";
+    }
 }

@@ -20,6 +20,16 @@
                 "viewBookings.html"
             ],
             "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\java\\com\\example\\demo\\Model": {
+            "order": [
+                "Admin.java",
+                "Artist.java",
+                "Customer.java",
+                "Review.java",
+                "Booking.java"
+            ],
+            "type": "manual"
         }
     }
 }
