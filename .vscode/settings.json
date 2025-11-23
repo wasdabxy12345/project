@@ -30,6 +30,15 @@
                 "Booking.java"
             ],
             "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\java\\com\\example\\demo\\repository": {
+            "order": [
+                "ArtistRepository.java",
+                "CustomerRepository.java",
+                "ReviewRepository.java",
+                "BookingRepository.java"
+            ],
+            "type": "manual"
         }
     }
 }

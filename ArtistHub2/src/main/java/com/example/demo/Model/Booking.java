@@ -1,12 +1,25 @@
 package com.example.demo.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
+@Entity
+@Table(name = "bookings")
 public class Booking {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String customerName;
     private String artistName;
     private String date;
     private String status;
+    
+    public Booking() {
+    }
 
     public Booking(int id, String customerName, String artistName, String date, String status) {
         this.id = id;

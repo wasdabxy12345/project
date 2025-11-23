@@ -17,6 +17,7 @@ import com.example.demo.Model.Booking;
 import com.example.demo.Model.Customer;
 import com.example.demo.Model.Review;
 import com.example.demo.repository.ArtistRepository;
+import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.ReviewRepository;
 
@@ -30,6 +31,8 @@ public class AdminController {
 	private ReviewRepository reviewRepository;
 	@Autowired
 	private CustomerRepository customerRepository;
+	@Autowired
+	private BookingRepository bookingRepository;
 
 	// Shows the admin login page
 	@GetMapping("/login")
@@ -129,18 +132,9 @@ public class AdminController {
 		return "redirect:/admin/manageCustomers";
 	}
 
-	@GetMapping("/bookings")
-    public String viewAllBookings(Model model) {
-
-        // Dummy dynamic list (Replace with database later)
-        List<Booking> bookings = Arrays.asList(
-                new Booking(1, "Customer A", "Artist X", "2025-01-01", "Confirmed"),
-                new Booking(2, "Customer B", "Artist Y", "2025-02-12", "Pending"),
-                new Booking(3, "Customer C", "Artist Z", "2025-03-22", "Cancelled")
-        );
-
-        model.addAttribute("bookings", bookings);
-
-        return "admin/viewBookings";
+	@GetMapping("/viewBookings")
+    public String viewBookings(Model model) {
+		model.addAttribute("bookings", bookingRepository.findAll());
+		return "admin/viewBookings";
     }
 }
