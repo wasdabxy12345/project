@@ -39,6 +39,16 @@
                 "BookingRepository.java"
             ],
             "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\resources\\templates": {
+            "order": [
+                "index.html",
+                "login",
+                "register",
+                "dashboard",
+                "admin"
+            ],
+            "type": "manual"
         }
     }
 }

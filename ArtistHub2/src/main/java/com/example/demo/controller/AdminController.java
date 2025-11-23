@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.Model.Artist;
-import com.example.demo.Model.Booking;
 import com.example.demo.Model.Customer;
 import com.example.demo.Model.Review;
 import com.example.demo.repository.ArtistRepository;
@@ -134,7 +132,7 @@ public class AdminController {
 
 	@GetMapping("/viewBookings")
     public String viewBookings(Model model) {
-		model.addAttribute("bookings", bookingRepository.findAll());
+		model.addAttribute("viewBookings", bookingRepository.findAll());
 		return "admin/viewBookings";
     }
 }
