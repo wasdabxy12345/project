@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -135,4 +134,15 @@ public class AdminController {
 		model.addAttribute("viewBookings", bookingRepository.findAll());
 		return "admin/viewBookings";
     }
+
+	@GetMapping("/viewReviews")
+	public String viewReviews(Model model) {
+
+		List<Review> reviews = reviewRepository.findAll();
+		model.addAttribute("reviews", reviews);
+
+		return "admin/viewReviews";
+	}
+
+
 }

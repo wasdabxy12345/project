@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Reviews</title>
+</head>
+<body>
+
+<h2>All Reviews</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+        <tr>
+            <th>Customer</th>
+            <th>Artist</th>
+            <th>Review</th>
+            <th>Rating</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <!-- For now using placeholder values until backend provides actual data -->
+        <tr th:each="review : ${reviews}">
+            <td th:text="${review.customerName}">Customer Name</td>
+            <td th:text="${review.artistName}">Artist Name</td>
+            <td th:text="${review.text}">Sample review text</td>
+            <td th:text="${review.rating}">4</td>
+        </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

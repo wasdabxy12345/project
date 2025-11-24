@@ -12,8 +12,10 @@ public class Review {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	private Long artistId; // Which artist got the review
-	private Long customerId; // Who gave the review
+	private Long artistId;
+	private Long customerId;
+	private String artistName; // Which artist got the review
+	private String customerName; // Who gave the review
 
 	private String comment;
 	private int rating; // Example: 1–5 stars
@@ -42,6 +44,22 @@ public class Review {
 		this.customerId = customerId;
 	}
 
+	public String getArtistName() {
+		return artistName;
+	}
+
+	public void setArtistName(String artistName) {
+		this.artistName = artistName;
+	}
+
+	public String getCustomerName() {
+		return customerName;
+	}
+
+	public void setCustomerName(String customerName) {
+		this.customerName = customerName;
+	}
+
 	public String getComment() {
 		return comment;
 	}
@@ -57,6 +75,4 @@ public class Review {
 	public void setRating(int rating) {
 		this.rating = rating;
 	}
-
-	// Getters, Setters
 }

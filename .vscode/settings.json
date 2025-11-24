@@ -17,7 +17,8 @@
                 "viewArtist.html",
                 "manageCustomers.html",
                 "viewCustomer.html",
-                "viewBookings.html"
+                "viewBookings.html",
+                "viewReviews.html"
             ],
             "type": "manual"
         },
