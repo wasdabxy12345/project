@@ -18,7 +18,8 @@
                 "manageCustomers.html",
                 "viewCustomer.html",
                 "viewBookings.html",
-                "viewReviews.html"
+                "viewReviews.html",
+                "viewFeedbacks.html"
             ],
             "type": "manual"
         },
@@ -27,8 +28,9 @@
                 "Admin.java",
                 "Artist.java",
                 "Customer.java",
+                "Booking.java",
                 "Review.java",
-                "Booking.java"
+                "Feedback.java"
             ],
             "type": "manual"
         },
@@ -36,8 +38,9 @@
             "order": [
                 "ArtistRepository.java",
                 "CustomerRepository.java",
+                "BookingRepository.java",
                 "ReviewRepository.java",
-                "BookingRepository.java"
+                "FeedbackRepository.java"
             ],
             "type": "manual"
         },

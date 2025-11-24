@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All Feedbacks</title>
+</head>
+<body>
+
+<h2>All Feedbacks</h2>
+
+<table border="1" cellpadding="8">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Given By</th> <!-- Customer or Artist -->
+            <th>Name</th>
+            <th>Feedback</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <!-- Loop through all feedback entries -->
+        <tr th:each="fb : ${feedbackList}">
+            <td th:text="${fb.id}">1</td>
+            <td th:text="${fb.userType}">Customer</td>
+            <td th:text="${fb.userName}">John Doe</td>
+            <td th:text="${fb.message}">Great experience!</td>
+            <td th:text="${fb.date}">2025-01-01</td>
+        </tr>
+    </tbody>
+
+</table>
+
+</body>
+</html>

@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.Model.Artist;
 import com.example.demo.Model.Customer;
+import com.example.demo.Model.Feedback;
 import com.example.demo.Model.Review;
 import com.example.demo.repository.ArtistRepository;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.CustomerRepository;
+import com.example.demo.repository.FeedbackRepository;
 import com.example.demo.repository.ReviewRepository;
 
 @Controller
@@ -25,11 +27,13 @@ public class AdminController {
 	@Autowired
 	private ArtistRepository artistRepository;
 	@Autowired
-	private ReviewRepository reviewRepository;
-	@Autowired
 	private CustomerRepository customerRepository;
 	@Autowired
+	private ReviewRepository reviewRepository;
+	@Autowired
 	private BookingRepository bookingRepository;
+	@Autowired
+	private FeedbackRepository feedbackRepository;
 
 	// Shows the admin login page
 	@GetMapping("/login")
@@ -137,12 +141,17 @@ public class AdminController {
 
 	@GetMapping("/viewReviews")
 	public String viewReviews(Model model) {
-
 		List<Review> reviews = reviewRepository.findAll();
 		model.addAttribute("reviews", reviews);
 
 		return "admin/viewReviews";
 	}
 
+	@GetMapping("/viewFeedbacks")
+	public String viewFeedbacks(Model model) {
+		List<Feedback> feedbacks = feedbackRepository.findAll();
+		model.addAttribute("feedbacks", feedbacks);
 
+		return "admin/viewFeedbacks";
+	}
 }
