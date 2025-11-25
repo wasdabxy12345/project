@@ -1,47 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Manage Artists</title>
 </head>
+
 <body>
 
-<h2>Manage Artists</h2>
+    <h2>Manage Artists</h2>
 
-<!-- Placeholder table -->
-<table border="1" cellpadding="5" cellspacing="0">
-    <thead>
-        <tr>
-            <th>Artist ID</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Status</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Artist ID</th>
+                <th>Name</th>
+                <th>email</th>
+                <th>phone</th>
+                <th>Category</th>
+                <th>price</th>
+                <th>experience</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
 
-    <tbody>
-        <tr th:each="artist : ${artists}">
-            <td th:text="${artist.id}"></td>
-            <td th:text="${artist.name}"></td>
-            <td th:text="${artist.category}"></td>
-            <td th:text="${artist.status}"></td>
-            <td>
-			    <form th:action="@{/admin/updateArtistStatus}" method="post">
-			        <input type="hidden" name="artistId" th:value="${artist.id}" />
-			        <select name="newStatus">
-			            <option value="PENDING" th:selected="${artist.status == 'PENDING'}">PENDING</option>
-			            <option value="APPROVED" th:selected="${artist.status == 'APPROVED'}">APPROVED</option>
-			            <option value="REJECTED" th:selected="${artist.status == 'REJECTED'}">REJECTED</option>
-			        </select>
-			        <button type="submit">Update</button>
-			    </form>
-			    <a th:href="@{'/admin/artist/view/' + ${artist.id}}">View</a> |
-			    <a th:href="@{'/admin/artist/delete/' + ${artist.id}}">Delete</a>
-			</td>
-        </tr>
-    </tbody>
-</table>
+        <tbody>
+            <tr th:each="artist : ${artists}">
+                <td th:text="${artist.id}"></td>
+                <td th:text="${artist.name}"></td>
+                <td th:text="${artist.email}"></td>
+                <td th:text="${artist.phone}"></td>
+                <td th:text="${artist.category}"></td>
+                <td th:text="${artist.price}"></td>
+                <td th:text="${artist.xp}"></td>
+                <td th:text="${artist.status}"></td>
+                <td>
+                    <form th:action="@{/admin/updateArtistStatus}" method="post">
+                        <input type="hidden" name="artistId" th:value="${artist.id}" />
+                        <select name="newStatus">
+                            <option value="PENDING" th:selected="${artist.status == 'PENDING'}">PENDING</option>
+                            <option value="APPROVED" th:selected="${artist.status == 'APPROVED'}">APPROVED</option>
+                            <option value="REJECTED" th:selected="${artist.status == 'REJECTED'}">REJECTED</option>
+                        </select>
+                        <button type="submit">Update</button>
+                    </form>
+                    <a th:href="@{'/admin/artist/view/' + ${artist.id}}">View</a> |
+                    <a th:href="@{'/admin/artist/delete/' + ${artist.id}}">Delete</a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
 
 </body>
+
 </html>

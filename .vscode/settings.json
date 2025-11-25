@@ -47,10 +47,17 @@
         "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\resources\\templates": {
             "order": [
                 "index.html",
-                "login",
                 "register",
+                "login",
                 "dashboard",
-                "admin"
+                "admin",
+                "artist"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\program\\project\\ArtistHub2\\src\\main\\resources\\templates\\artist": {
+            "order": [
+                "manageProfile.html"
             ],
             "type": "manual"
         }

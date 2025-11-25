@@ -1,29 +1,36 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Artist Registration</title>
 </head>
+
 <body>
 
-<h2>Artist Registration</h2>
+    <h2>Artist Registration</h2>
 
-<form th:action="@{/artist/register}" th:object="${artist}" method="post">
+    <form th:action="@{/artist/register}" th:object="${artist}" method="post">
 
-    <label>Name:</label><br>
-    <input type="text" th:field="*{name}" required><br><br>
-    
-    <label>Category:</label><br>
-    <input type="text" th:field="*{category}" required><br><br>
+        <label>Name:</label><br>
+        <input type="text" th:field="*{name}" required>
+        <br><br>
 
-    <label>Email:</label><br>
-    <input type="email" th:field="*{email}" required><br><br>
+        <label>Category:</label><br>
+        <input type="text" th:field="*{category}" required>
+        <br><br>
 
-    <label>Password:</label><br>
-    <input type="password" th:field="*{password}" required><br><br>
+        <label>email:</label><br>
+        <input type="email" th:field="*{email}" required>
+        <br><br>
 
-    <button type="submit">Register</button>
-</form>
+        <label>Password:</label><br>
+        <input type="password" th:field="*{password}" required>
+        <br><br>
+
+        <button type="submit">Register</button>
+    </form>
 
 </body>
+
 </html>

@@ -10,15 +10,15 @@
 
 <form th:action="@{/customer/register}" th:object="${customer}" method="post">
 
-    <label>Name:</label>
+    <label>Name:</label><br>
     <input type="text" th:field="*{name}" required>
     <br><br>
 
-    <label>Email:</label>
+    <label>Email:</label><br>
     <input type="email" th:field="*{email}" required>
     <br><br>
 
-    <label>Password:</label>
+    <label>Password:</label><br>
     <input type="password" th:field="*{password}" required>
     <br><br>
 

@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ArtistHub2Application",
+            "request": "launch",
+            "mainClass": "com.example.demo.ArtistHub2Application",
+            "projectName": "ArtistHub2"
+        },
+        {
+            "type": "java",
             "name": "RegistrationExample2Application",
             "request": "launch",
             "mainClass": "com.example.demo.RegistrationExample2Application",

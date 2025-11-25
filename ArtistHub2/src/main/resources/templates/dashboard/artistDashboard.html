@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Artist Dashboard</title>
+	<meta charset="UTF-8">
+	<title>Artist Dashboard</title>
 </head>
+
 <body>
 
-<h2>Artist Dashboard</h2>
+	<h2>Artist Dashboard</h2>
 
-<!-- CASE 1: Artist is still pending -->
-<div th:if="${artist.status == 'PENDING'}">
-    <h3>Your profile is under review.</h3>
-    <p>Please wait for admin approval before accessing full features.</p>
-</div>
+	<!-- CASE 1: Artist is still pending -->
+	<div th:if="${artist.status == 'PENDING'}">
+		<h3>Your profile is under review.</h3>
+		<p>Please wait for admin approval before accessing full features.</p>
+	</div>
 
-<!-- CASE 2: Artist is approved -->
-<div th:if="${artist.status == 'APPROVED'}">
-	<ul>
-	    <li><a th:href="@{/artist/manage-profile}">Manage Profile</a></li>
-	    <li><a th:href="@{/artist/manage-files}">Manage Performance Files</a></li>
-	    <li><a th:href="@{/artist/manage-feedback}">Manage Feedback</a></li>
-	    <li><a th:href="@{/artist/view-reviews}">View All Reviews</a></li>
-	    <li><a th:href="@{/artist/manage-bookings}">Manage Bookings</a></li>
-	</ul>
-</div>
+	<!-- CASE 2: Artist is approved -->
+	<div th:if="${artist.status == 'APPROVED'}">
+		<ul>
+			<li><a th:href="@{/artist/manageProfile}">Manage Profile</a></li>
+			<li><a th:href="@{/artist/manage-files}">Manage Performance Files</a></li>
+			<li><a th:href="@{/artist/manage-feedback}">Manage Feedback</a></li>
+			<li><a th:href="@{/artist/view-reviews}">View All Reviews</a></li>
+			<li><a th:href="@{/artist/manage-bookings}">Manage Bookings</a></li>
+		</ul>
+	</div>
 
 </body>
+
 </html>

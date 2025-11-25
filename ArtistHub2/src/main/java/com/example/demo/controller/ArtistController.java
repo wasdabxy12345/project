@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/artist")
 public class ArtistController {
 
+	@Autowired
 	private final ArtistRepository artistRepo;
 
 	public ArtistController(ArtistRepository artistRepo) {
@@ -31,9 +33,10 @@ public class ArtistController {
 	}
 
 	// Handle Form Submission
-	@SuppressWarnings("null")
 	@PostMapping("/register")
 	public String registerArtist(@ModelAttribute Artist artist) {
+		// debug: log incoming artist fields
+		System.out.println("Registering Artist - name=" + artist.getName() + ", Email:" + artist.getEmail());
 		artistRepo.save(artist); // Saves to DB
 		return "redirect:/artist/login"; // Redirect after success
 	}
@@ -68,4 +71,30 @@ public class ArtistController {
 		return "dashboard/artistDashboard"; // loads artistDashboard.html
 	}
 
+	@GetMapping("/manageProfile")
+	public String manageProfile(HttpSession session, Model model) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+		model.addAttribute("artist", artist);
+		return "artist/manageProfile"; // loads manageProfile.html
+	}
+
+	@PostMapping("/manageProfile")
+	public String updateProfile(HttpSession session, @ModelAttribute Artist updatedArtist) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		// Update fields
+		artist.setName(updatedArtist.getName());
+		artist.setPhone(updatedArtist.getPhone());
+		artist.setCategory(updatedArtist.getCategory());
+		artist.setXp(updatedArtist.getXp());
+		artist.setPrice(updatedArtist.getPrice());
+
+		artistRepo.save(artist); // Save updated artist
+		session.setAttribute("loggedArtist", artist); // Update session attribute
+		return "redirect:/artist/manageProfile"; // Redirect back to profile management
+	}
 }
