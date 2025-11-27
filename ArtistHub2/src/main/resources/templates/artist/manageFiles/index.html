@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Performance Files</title>
+    <style>
+        body {
+            font-family: Arial;
+            margin: 20px;
+            text-align: center;
+        }
+
+        .file-card {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        img,
+        video {
+            width: 180px;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            padding-top: 50px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        .modal-content {
+            margin: auto;
+            display: block;
+            width: auto;
+            height: auto;
+            max-width: 90vw;
+            /* Will cover up to 90% of screen width */
+            max-height: 90vh;
+            /* Will cover up to 90% of screen height */
+            object-fit: contain;
+            /* Keeps full image without stretching */
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 35px;
+            font-size: 40px;
+            color: white;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<script>
+    function openPreview(src) {
+        const modal = document.getElementById("previewModal");
+        const img = document.getElementById("previewImage");
+        const video = document.getElementById("previewVideo");
+
+        if (src.endsWith(".mp4") || src.includes("video")) {
+            img.style.display = "none";
+            video.style.display = "block";
+            video.src = src;
+        } else {
+            video.style.display = "none";
+            img.style.display = "block";
+            img.src = src;
+        }
+
+        modal.style.display = "block";
+    }
+
+    function closePreview() {
+        document.getElementById("previewModal").style.display = "none";
+    }
+</script>
+
+<body>
+    <h1>Manage Performance Files</h1>
+
+    <form th:action="@{/artist/manageFiles/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*,video/*" required />
+        <button type="submit">Upload File</button>
+    </form>
+
+    <div>
+        <div th:each="file : ${files}" class="file-card">
+            <div th:switch="${file.fileType}">
+                <!-- If Image -->
+                <img th:if="${file.fileType.startsWith('image')}" th:src="@{'/file/' + ${file.id}}"
+                    onclick="openPreview(this.src)" />
+
+                <!-- If Video -->
+                <video th:if="${file.fileType.startsWith('video')}" controls
+                    onclick="openPreview(this.querySelector('source').src)">
+                    <source th:src="@{'/file/' + ${file.id}}" th:type="${file.fileType}">
+                </video>
+            </div>
+            <p th:text="${file.fileName}">File Name</p>
+            <button type="button" th:onclick="'openPreview(\'/artist/files/' + ${file.id} + '\')'">Preview</button>
+            <a th:href="@{/artist/deleteFile/{id}(id=${file.id})}"><button type="button">Delete</button></a>
+        </div>
+    </div>
+
+    <!-- Modal for preview -->
+    <div id="previewModal" class="modal">
+        <span class="close" onclick="closePreview()">&times;</span>
+        <img id="previewImage" class="modal-content" style="display:none;" />
+        <video id="previewVideo" class="modal-content" style="display:none;" controls></video>
+    </div>
+
+</html>

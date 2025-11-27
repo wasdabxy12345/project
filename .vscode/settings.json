@@ -60,6 +60,76 @@
                 "manageProfile.html"
             ],
             "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\java\\com\\example\\demo\\Model": {
+            "order": [
+                "Admin.java",
+                "Artist.java",
+                "Customer.java",
+                "Booking.java",
+                "Review.java",
+                "Feedback.java",
+                "PerformanceFile.java"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\java\\com\\example\\demo\\repository": {
+            "order": [
+                "ArtistRepository.java",
+                "CustomerRepository.java",
+                "BookingRepository.java",
+                "ReviewRepository.java",
+                "FeedbackRepository.java",
+                "PerformanceFileRepository.java"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\resources\\templates\\admin": {
+            "order": [
+                "manageArtists.html",
+                "manageCustomers.html",
+                "viewArtist.html",
+                "viewCustomer.html",
+                "viewBookings.html",
+                "viewReviews.html",
+                "viewFeedbacks.html"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\resources\\templates": {
+            "order": [
+                "register",
+                "login",
+                "dashboard",
+                "admin",
+                "artist",
+                "index.html"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\java\\com\\example\\demo": {
+            "order": [
+                "Model",
+                "repository",
+                "controller",
+                "ArtistHub2Application.java"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\resources\\templates\\artist": {
+            "order": [
+                "manageProfile.html",
+                "manageFiles"
+            ],
+            "type": "manual"
+        },
+        "c:\\Users\\shiva\\Documents\\GitHub\\project\\ArtistHub2\\src\\main\\resources\\templates\\artist\\manageFiles": {
+            "order": [
+                "index.html",
+                "upload.html",
+                "files.html"
+            ],
+            "type": "manual"
         }
     }
 }

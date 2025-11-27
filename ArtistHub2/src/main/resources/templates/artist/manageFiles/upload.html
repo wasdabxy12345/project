@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Performance Files</title>
+</head>
+
+<body>
+    <h1>Upload Performance File</h1>
+    <form th:action="@{/artist/manageFiles/upload}" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*,video/*" required />
+        <button type="submit">Upload File</button>
+    </form>
+
+    <p th:text="${message}"></p>
+
+    <a th:href="@{/artist/manageFiles/index}">Back to Manage Files</a>
+</body>
+
+</html>

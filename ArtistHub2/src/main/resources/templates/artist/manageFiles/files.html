@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Performance Files</title>
+</head>
+
+<body>
+    <h2>Uploaded Files</h2>
+
+    <table border="1" style="width:100%; text-align:center;">
+        <tr>
+            <th>File Name</th>
+            <th>Preview</th>
+            <th>Actions</th>
+        </tr>
+        <tr th:each="file : ${files}">
+            <td th:text="${file.fileName}"></td>
+            <td>
+                <div th:if="${#strings.startsWith(file.fileType, 'image/')}">
+                    <img th:src="@{/artist/files/{id}(id=${file.id})}" alt="Image Preview" width="100" />
+                </div>
+                <div th:if="${#strings.startsWith(file.fileType, 'video/')}">
+                    <video th:src="@{/artist/files/{id}(id=${file.id})}" width="150" controls></video>
+                </div>
+            </td>
+            <td>
+                <a th:href="@{/artist/files/{id}(id=${file.id})}" download>Download</a> |
+                <a th:href="@{/artist/deleteFile/{id}(id=${file.id})}">Delete</a>
+            </td>
+        </tr>
+</body>
+
+</html>
