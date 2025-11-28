@@ -15,8 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Model.Artist;
+import com.example.demo.Model.Feedback;
 import com.example.demo.Model.PerformanceFile;
 import com.example.demo.repository.ArtistRepository;
+import com.example.demo.repository.FeedbackRepository;
 import com.example.demo.repository.PerformanceFileRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,6 +32,8 @@ public class ArtistController {
 	private final ArtistRepository artistRepo;
 	@Autowired
 	private final PerformanceFileRepository performanceFileRepo;
+	@Autowired
+	private FeedbackRepository feedbackRepository;
 
 	public ArtistController(ArtistRepository artistRepo, PerformanceFileRepository performanceFileRepo) {
 		this.artistRepo = artistRepo;
@@ -163,4 +167,80 @@ public class ArtistController {
 		return "redirect:/artist/manageFiles/index";
 	}
 
+	// method to perform CRUD operations on feedbacks given by artists to the admin
+	@GetMapping("/manageFeedbacks")
+	public String manageFeedbacks(HttpSession session, Model model) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		List<Feedback> feedbacks = feedbackRepository
+				.findByUserTypeAndUserId("Artist", artist.getId());
+		model.addAttribute("feedbacks", feedbacks);
+		return "artist/manageFeedbacks"; // loads manageFeedbacks.html
+	}
+
+	@PostMapping("/submitFeedback")
+	public String submitFeedback(HttpSession session, @RequestParam String message) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		Feedback feedback = new Feedback();
+		feedback.setUserType("Artist");
+		feedback.setUserId(artist.getId());
+		feedback.setUserName(artist.getName());
+		feedback.setMessage(message);
+		feedback.setDate(java.time.LocalDateTime.now());
+
+		feedbackRepository.save(feedback);
+
+		return "redirect:/artist/manageFeedbacks"; // Redirect back to feedback management
+	}
+
+	@PostMapping("/editFeedback")
+	public String editFeedback(HttpSession session, @RequestParam Long id, @RequestParam String message) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login";
+
+		Feedback feedback = feedbackRepository.findById(id).orElse(null);
+		// If feedback not found or not owned by this artist, just redirect back
+		if (feedback == null)
+			return "redirect:/artist/manageFeedbacks";
+
+		// Ensure only the artist who created the feedback can edit it
+		if (!"Artist".equals(feedback.getUserType()) || feedback.getUserId() == null
+				|| !feedback.getUserId().equals(artist.getId())) {
+			return "redirect:/artist/manageFeedbacks";
+		}
+
+		feedback.setMessage(message);
+		feedback.setDate(java.time.LocalDateTime.now());
+		feedbackRepository.save(feedback);
+
+		return "redirect:/artist/manageFeedbacks";
+	}
+
+	@PostMapping("/deleteFeedback")
+	public String deleteFeedback(HttpSession session, @RequestParam Long id) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login";
+
+		Feedback feedback = feedbackRepository.findById(id).orElse(null);
+		// If feedback not found or not owned by this artist, just redirect back
+		if (feedback == null)
+			return "redirect:/artist/manageFeedbacks";
+
+		// Ensure only the artist who created the feedback can delete it
+		if (!"Artist".equals(feedback.getUserType()) || feedback.getUserId() == null
+				|| !feedback.getUserId().equals(artist.getId())) {
+			return "redirect:/artist/manageFeedbacks";
+		}
+
+		feedbackRepository.deleteById(id);
+
+		return "redirect:/artist/manageFeedbacks";
+	}
 }

@@ -1,6 +1,6 @@
 package com.example.demo.Model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -16,7 +16,8 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String userType; // "Customer" or "Artist"
+    private Long userId;
     private String userName;
     private String message;
-    private LocalDate date;
+    private LocalDateTime date;
 }

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Feedbacks</title>
+</head>
+<body>
+    <header>
+        <h1>Manage Feedbacks</h1>
+    </header>
+    <main>
+        <section th:if="${#lists.isEmpty(feedbacks)}">
+            <p>No feedbacks available.</p>
+        </section>
+        <section th:unless="${#lists.isEmpty(feedbacks)}">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Message</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="feedback : ${feedbacks}">
+                        <td th:text="${feedback.userType}">User Type</td>
+                        <td th:text="${feedback.userName}">User Name</td>
+                        <td th:text="${feedback.message}">Message</td>
+                        <td th:text="${feedback.date}">Date</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+    </main>
+</html>
