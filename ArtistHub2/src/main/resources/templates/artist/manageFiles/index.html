@@ -106,7 +106,7 @@
         <div th:each="file : ${files}" class="file-card">
             <div th:switch="${file.fileType}">
                 <!-- If Image -->
-                <img th:if="${file.fileType.startsWith('image')}" th:src="@{'/file/' + ${file.id}}"
+                <img th:if="${file.fileType.startsWith('image')}" th:src="@{'/artist/files/' + ${file.id}}"
                     onclick="openPreview(this.src)" />
 
                 <!-- If Video -->

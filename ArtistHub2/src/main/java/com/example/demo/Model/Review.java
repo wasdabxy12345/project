@@ -1,5 +1,7 @@
 package com.example.demo.Model;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,4 +23,5 @@ public class Review {
 
 	private String comment;
 	private int rating; // Example: 1–5 stars
+	private LocalDateTime date;
 }

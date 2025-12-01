@@ -17,9 +17,11 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.Model.Artist;
 import com.example.demo.Model.Feedback;
 import com.example.demo.Model.PerformanceFile;
+import com.example.demo.Model.Review;
 import com.example.demo.repository.ArtistRepository;
 import com.example.demo.repository.FeedbackRepository;
 import com.example.demo.repository.PerformanceFileRepository;
+import com.example.demo.repository.ReviewRepository;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -34,6 +36,8 @@ public class ArtistController {
 	private final PerformanceFileRepository performanceFileRepo;
 	@Autowired
 	private FeedbackRepository feedbackRepository;
+	@Autowired
+	private ReviewRepository reviewRepository;
 
 	public ArtistController(ArtistRepository artistRepo, PerformanceFileRepository performanceFileRepo) {
 		this.artistRepo = artistRepo;
@@ -246,5 +250,18 @@ public class ArtistController {
 		feedbackRepository.deleteById(id);
 
 		return "redirect:/artist/manageFeedbacks";
+	}
+
+	// method to view all reviews given by customers to the artist
+	@GetMapping("/viewReviews")
+	public String viewReviews(HttpSession session, Model model) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		// Assuming there's a method in feedbackRepository to fetch reviews for the artist
+		List<Review> reviews = reviewRepository.findByArtistId(artist.getId());
+		model.addAttribute("reviews", reviews);
+		return "artist/viewReviews"; // loads viewReviews.html
 	}
 }
