@@ -10,26 +10,39 @@
         <h1>Manage Feedbacks</h1>
     </header>
     <main>
-        <section th:if="${#lists.isEmpty(feedbacks)}">
-            <p>No feedbacks available.</p>
+        <section>
+            <h2>Submit New Feedback</h2>
+            <form th:action="@{/artist/createFeedback}" method="post">
+                <label for="message">Feedback Message:</label><br>
+                <textarea id="message" name="message" rows="4" cols="50" required></textarea><br><br>
+                <button type="submit">Submit Feedback</button>
+            </form>
         </section>
-        <section th:unless="${#lists.isEmpty(feedbacks)}">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Message</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr th:each="feedback : ${feedbacks}">
-                        <td th:text="${feedback.userType}">User Type</td>
-                        <td th:text="${feedback.userName}">User Name</td>
-                        <td th:text="${feedback.message}">Message</td>
-                        <td th:text="${feedback.date}">Date</td>
-                    </tr>
-                </tbody>
-            </table>
-        </section>
+        <table>
+            <thead>
+                <tr>
+                    <th>Message</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="feedback : ${feedbacks}">
+                    <td th:text="${feedback.message}">Feedback Message</td>
+                    <td th:text="${#temporals.format(feedback.date, 'yyyy-MM-dd HH:mm')}">Feedback Date</td>
+                    <td>
+                        <form th:action="@{/artist/editFeedback}" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${feedback.id}" />
+                            <input type="text" name="message" th:value="${feedback.message}" required />
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form th:action="@{/artist/deleteFeedback}" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${feedback.id}" />
+                            <button type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </main>
 </html>

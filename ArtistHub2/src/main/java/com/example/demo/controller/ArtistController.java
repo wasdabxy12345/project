@@ -167,7 +167,8 @@ public class ArtistController {
 		return "redirect:/artist/manageFiles/index";
 	}
 
-	// method to perform CRUD operations on feedbacks given by artists to the admin
+	// methods to perform CRUD operations on feedbacks given by artists to the admin
+	// load feedback management page
 	@GetMapping("/manageFeedbacks")
 	public String manageFeedbacks(HttpSession session, Model model) {
 		Artist artist = (Artist) session.getAttribute("loggedArtist");
@@ -180,8 +181,9 @@ public class ArtistController {
 		return "artist/manageFeedbacks"; // loads manageFeedbacks.html
 	}
 
-	@PostMapping("/submitFeedback")
-	public String submitFeedback(HttpSession session, @RequestParam String message) {
+	// create new feedback
+	@PostMapping("/createFeedback")
+	public String createFeedback(HttpSession session, @RequestParam String message) {
 		Artist artist = (Artist) session.getAttribute("loggedArtist");
 		if (artist == null)
 			return "redirect:/artist/login"; // Redirect to login if not logged in
@@ -198,6 +200,7 @@ public class ArtistController {
 		return "redirect:/artist/manageFeedbacks"; // Redirect back to feedback management
 	}
 
+	// edit existing feedback
 	@PostMapping("/editFeedback")
 	public String editFeedback(HttpSession session, @RequestParam Long id, @RequestParam String message) {
 		Artist artist = (Artist) session.getAttribute("loggedArtist");
@@ -222,6 +225,7 @@ public class ArtistController {
 		return "redirect:/artist/manageFeedbacks";
 	}
 
+	// delete existing feedback
 	@PostMapping("/deleteFeedback")
 	public String deleteFeedback(HttpSession session, @RequestParam Long id) {
 		Artist artist = (Artist) session.getAttribute("loggedArtist");
