@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Search Artists</title>
+    </head>
+    <body>
+        <h2>Search Artists</h2>
+        <form th:action="@{/customer/searchArtist}" method="get">
+            <label for="category">Filter by Category:</label>
+            <select name="category" id="category">
+                <option value="">All</option>
+                <option value="Painter">Painter</option>
+                <option value="Musician">Musician</option>
+                <option value="Dancer">Dancer</option>
+                <option value="Photographer">Photographer</option>
+            </select>
+            <button type="submit">Search</button>
+        </form>
+
+        <div th:if="${artists != null}">
+            <h3>Artist Results:</h3>
+            <table border="1">
+                <tr>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Experience</th>
+                    <th>Price</th>
+                </tr>
+                <tr th:each="artist : ${artists}">
+                    <td><a th:href="@{/customer/viewArtist/{id}(id=${artist.id})}" th:text="${artist.name}">Artist Name</a></td>
+                    <td th:text="${artist.category}">Artist Category</td>
+                    <td th:text="${artist.xp}">Artist Experience</td>
+                    <td th:text="${artist.price}">Artist Price</td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

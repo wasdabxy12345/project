@@ -8,4 +8,6 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
 	Artist findByEmailAndPassword(String email, String password);
 
 	Artist findByEmail(String name);
+
+    Artist findByCategory(String category);
 }

@@ -17,6 +17,7 @@ public class PerformanceFile {
 
     private String fileName;
     private String fileType;
+    private Long artistId;
 
     @Lob
     @Column(columnDefinition = "LONGBLOB")

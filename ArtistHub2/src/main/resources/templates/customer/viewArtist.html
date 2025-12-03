@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Artist Details</title>
+    </head>
+    <body>
+        <div class="container">
+            
+            <div class="artist-header">
+                <h1 th:text="${artist.name}">Artist Name</h1>
+                <p th:text="'Category: ' + ${artist.category}">Category</p>
+            </div>
+
+            <div class="artist-info">
+                <div class="info-item">
+                    <span class="info-label">Experience:</span> <span th:text="${artist.xp}">0</span> years
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Price:</span> $<span th:text="${artist.price}">0</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span> <span th:text="${artist.email}">email@example.com</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Phone:</span> <span th:text="${artist.phone}">N/A</span>
+                </div>
+            </div>
+
+            <div class="portfolio-section">
+                <h2>Portfolio</h2>
+                <div th:if="${portfolio != null and !portfolio.isEmpty()}" class="portfolio-grid">
+                    <div th:each="file : ${portfolio}" class="portfolio-item">
+                        <p th:text="${file.fileName}">File Name</p>
+                        <p class="file-info" th:text="${file.fileType}">File Type</p>
+                    </div>
+                </div>
+                <div th:if="${portfolio == null or portfolio.isEmpty()}" class="empty-portfolio">
+                    No portfolio files available for this artist.
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
