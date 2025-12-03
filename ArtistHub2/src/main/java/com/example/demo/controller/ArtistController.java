@@ -15,10 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.Model.Artist;
+import com.example.demo.Model.Booking;
 import com.example.demo.Model.Feedback;
 import com.example.demo.Model.PerformanceFile;
 import com.example.demo.Model.Review;
 import com.example.demo.repository.ArtistRepository;
+import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.FeedbackRepository;
 import com.example.demo.repository.PerformanceFileRepository;
 import com.example.demo.repository.ReviewRepository;
@@ -38,6 +40,8 @@ public class ArtistController {
 	private FeedbackRepository feedbackRepository;
 	@Autowired
 	private ReviewRepository reviewRepository;
+	@Autowired
+	private BookingRepository bookingRepository;
 
 	public ArtistController(ArtistRepository artistRepo, PerformanceFileRepository performanceFileRepo) {
 		this.artistRepo = artistRepo;
@@ -263,5 +267,62 @@ public class ArtistController {
 		List<Review> reviews = reviewRepository.findByArtistId(artist.getId());
 		model.addAttribute("reviews", reviews);
 		return "artist/viewReviews"; // loads viewReviews.html
+	}
+
+	// method to view all bookings for the logged-in artist
+	@GetMapping("/manageBookings")
+	public String viewBookings(HttpSession session, Model model) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		List<Booking> bookings = bookingRepository.findByArtistId(artist.getId());
+		model.addAttribute("bookings", bookings);
+		return "artist/manageBookings"; // loads manageBookings.html
+	}
+
+	// method to edit bookings
+	@PostMapping("/editBooking")
+	public String editBooking(HttpSession session, @RequestParam int id, @RequestParam String newDate) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		if (booking != null && booking.getArtistId() == artist.getId()) {
+			booking.setDate(newDate);
+			bookingRepository.save(booking);
+		}
+		return "redirect:/artist/manageBookings";
+	}
+
+	// method to cancel a booking
+	@PostMapping("/cancelBooking")
+	public String cancelBooking(HttpSession session, @RequestParam int id) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		if (booking != null && booking.getArtistId() == artist.getId()) {
+			booking.setStatus("Cancelled");
+			bookingRepository.save(booking);
+		}
+		return "redirect:/artist/manageBookings";
+	}
+
+	// method to complete a booking
+	@PostMapping("/completeBooking")
+	public String completeBooking(HttpSession session, @RequestParam int id) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login"; // Redirect to login if not logged in
+
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		if (booking != null && booking.getArtistId() == artist.getId()) {
+			booking.setStatus("Completed");
+			bookingRepository.save(booking);
+		}
+		return "redirect:/artist/manageBookings";
 	}
 }

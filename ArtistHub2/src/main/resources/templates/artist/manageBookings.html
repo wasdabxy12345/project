@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Bookings</title>
+</head>
+<body>
+
+</body>
+    <header>
+        <h1>Manage Bookings</h1>
+    </header>
+    <main>
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer Name</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="booking : ${bookings}">
+                    <td th:text="${booking.id}">1</td>
+                    <td th:text="${booking.customerName}">Customer Name</td>
+                    <td th:text="${booking.date}">2024-01-01</td>
+                    <td th:text="${booking.status}">Pending</td>
+                    <td>
+                        <form th:action="@{/artist/editBooking}" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${booking.id}" />
+                            <input type="date" name="newDate" th:value="${booking.date}" required />
+                            <button type="submit">Edit</button>
+                        </form>
+                        <form th:action="@{/artist/cancelBooking}" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${booking.id}" />
+                            <button type="submit">Cancel</button>
+                        </form>
+                        <form th:action="@{/artist/completeBooking}" method="post" style="display:inline;">
+                            <input type="hidden" name="id" th:value="${booking.id}" />
+                            <button type="submit">Mark as Completed</button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

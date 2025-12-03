@@ -15,8 +15,10 @@ public class Booking {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private String customerName;
+    private int artistId;
+    private int customerId;
     private String artistName;
+    private String customerName;
     private String date;
     private String status;
 
