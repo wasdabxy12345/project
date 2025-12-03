@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties.Http;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.example.demo.Model.Customer;
 import com.example.demo.repository.CustomerRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/customer")
@@ -44,18 +47,46 @@ public class CustomerController {
 
 	// Handle login submission
 	@PostMapping("/login")
-	public String loginCustomer(@ModelAttribute("customerLogin") Customer customer, Model model) {
+	public String loginCustomer(@ModelAttribute("customerLogin") Customer customer, Model model, HttpSession session) {
 		Customer loggedCustomer = customerRepo.findByEmailAndPassword(customer.getEmail(), customer.getPassword());
 
-		if (loggedCustomer != null)
-			return "redirect:/customer/dashboard"; // Replace with actual dashboard later
+		if (loggedCustomer != null){
+			session.setAttribute("loggedCustomer", loggedCustomer);
+			return "redirect:/customer/dashboard";
+		}
 		model.addAttribute("error", "Invalid email or password");
 		return "login/customerLogin";
 	}
 
 	@GetMapping("/dashboard")
-	public String customerDashboard() {
+	public String customerDashboard(HttpSession session, Model model) {
+		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		if (customer == null)
+			return "redirect:/customer/login";
+		model.addAttribute("customer", customer);
 		return "dashboard/customerDashboard";
 	}
 
+	// method to manage profile
+	@GetMapping("/manageProfile")
+	public String manageProfile(HttpSession session, Model model) {
+		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		if (customer == null)
+			return "redirect:/customer/login";
+		model.addAttribute("customer", customer);
+		return "customer/manageProfile";
+	}
+
+	@PostMapping("/manageProfile")
+	public String updateProfile(HttpSession session, @ModelAttribute Customer updatedCustomer) {
+		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		if (customer == null)
+			return "redirect:/customer/login";
+
+		customer.setName(updatedCustomer.getName());
+		customer.setEmail(updatedCustomer.getEmail());
+		customer.setPassword(updatedCustomer.getPassword());
+		customerRepo.save(customer);
+		return "redirect:/customer/manageProfile";
+	}
 }
