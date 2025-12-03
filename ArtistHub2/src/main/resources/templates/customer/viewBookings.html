@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #0099cc;
+        }
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        .back-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #0099cc;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: bold;
+        }
+        .status-accepted {
+            background-color: #d4edda;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #155724;
+            font-weight: bold;
+        }
+        .status-denied {
+            background-color: #f8d7da;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #721c24;
+            font-weight: bold;
+        }
+        .status-cancelled {
+            background-color: #e2e3e5;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #383d41;
+            font-weight: bold;
+        }
+        .status-completed {
+            background-color: #d1ecf1;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #0c5460;
+            font-weight: bold;
+        }
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background-color: #c82333;
+        }
+        .no-bookings {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+            font-size: 16px;
+        }
+        .booking-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        .summary-card {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #0099cc;
+            text-align: center;
+        }
+        .summary-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #666;
+        }
+        .summary-card .number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0099cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>My Booking Requests</h1>
+            <a href="/customer/dashboard" class="back-link">← Back to Dashboard</a>
+        </div>
+
+        <div th:if="${bookings != null and !bookings.isEmpty()}" class="booking-summary">
+            <div class="summary-card">
+                <h3>Total Bookings</h3>
+                <div class="number" th:text="${bookings.size()}">0</div>
+            </div>
+        </div>
+
+        <div th:if="${bookings == null or bookings.isEmpty()}" class="no-bookings">
+            You haven't made any booking requests yet. <br>
+            <a href="/customer/searchArtist" style="color: #007bff; text-decoration: none;">Search and book an artist</a>
+        </div>
+
+        <table th:if="${bookings != null and !bookings.isEmpty()}">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Artist Name</th>
+                    <th>Booking Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="booking : ${bookings}">
+                    <td th:text="${booking.id}">1</td>
+                    <td th:text="${booking.artistName}">Artist Name</td>
+                    <td th:text="${booking.date}">2024-01-01</td>
+                    <td>
+                        <span th:class="'status-' + ${booking.status.toLowerCase()}" th:text="${booking.status}">Pending</span>
+                    </td>
+                    <td>
+                        <div class="btn-container">
+                            <!-- Cancel button (only for PENDING and ACCEPTED) -->
+                            <form th:if="${booking.status == 'PENDING' or booking.status == 'Accepted'}" th:action="@{/customer/cancelBooking}" method="post" style="display: inline;" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                <input type="hidden" name="id" th:value="${booking.id}" />
+                                <button type="submit" class="btn btn-cancel">Cancel</button>
+                            </form>
+                            <!-- No action for DENIED, CANCELLED, or COMPLETED -->
+                            <div th:if="${booking.status != 'PENDING' and booking.status != 'Accepted'}" style="color: #999; font-size: 12px;">
+                                No actions available
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

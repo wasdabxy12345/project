@@ -4,15 +4,164 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Bookings</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #0099cc;
+            padding-bottom: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #0099cc;
+            color: white;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f0f0f0;
+        }
+        .status-pending {
+            background-color: #fff3cd;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #856404;
+            font-weight: bold;
+        }
+        .status-accepted {
+            background-color: #d4edda;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #155724;
+            font-weight: bold;
+        }
+        .status-denied {
+            background-color: #f8d7da;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #721c24;
+            font-weight: bold;
+        }
+        .status-cancelled {
+            background-color: #e2e3e5;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #383d41;
+            font-weight: bold;
+        }
+        .status-completed {
+            background-color: #d1ecf1;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #0c5460;
+            font-weight: bold;
+        }
+        .btn-container {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .btn-accept {
+            background-color: #28a745;
+            color: white;
+        }
+        .btn-accept:hover {
+            background-color: #218838;
+        }
+        .btn-deny {
+            background-color: #dc3545;
+            color: white;
+        }
+        .btn-deny:hover {
+            background-color: #c82333;
+        }
+        .btn-edit {
+            background-color: #007bff;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #0056b3;
+        }
+        .btn-cancel {
+            background-color: #ffc107;
+            color: white;
+        }
+        .btn-cancel:hover {
+            background-color: #e0a800;
+        }
+        .btn-complete {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .btn-complete:hover {
+            background-color: #138496;
+        }
+        .form-inline {
+            display: inline;
+            margin: 0 2px;
+        }
+        .edit-form {
+            display: inline-flex;
+            gap: 5px;
+            align-items: center;
+            margin: 0 2px;
+        }
+        .edit-form input {
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .no-bookings {
+            text-align: center;
+            padding: 20px;
+            color: #999;
+            font-style: italic;
+        }
+    </style>
 </head>
 <body>
-
-</body>
-    <header>
-        <h1>Manage Bookings</h1>
-    </header>
-    <main>
-        <table>
+    <div class="container">
+        <h1>Manage Booking Requests</h1>
+        
+        <div th:if="${bookings == null or bookings.isEmpty()}" class="no-bookings">
+            No bookings found.
+        </div>
+        
+        <table th:if="${bookings != null and !bookings.isEmpty()}">
             <thead>
                 <tr>
                     <th>Booking ID</th>
@@ -27,25 +176,46 @@
                     <td th:text="${booking.id}">1</td>
                     <td th:text="${booking.customerName}">Customer Name</td>
                     <td th:text="${booking.date}">2024-01-01</td>
-                    <td th:text="${booking.status}">Pending</td>
                     <td>
-                        <form th:action="@{/artist/editBooking}" method="post" style="display:inline;">
-                            <input type="hidden" name="id" th:value="${booking.id}" />
-                            <input type="date" name="newDate" th:value="${booking.date}" required />
-                            <button type="submit">Edit</button>
-                        </form>
-                        <form th:action="@{/artist/cancelBooking}" method="post" style="display:inline;">
-                            <input type="hidden" name="id" th:value="${booking.id}" />
-                            <button type="submit">Cancel</button>
-                        </form>
-                        <form th:action="@{/artist/completeBooking}" method="post" style="display:inline;">
-                            <input type="hidden" name="id" th:value="${booking.id}" />
-                            <button type="submit">Mark as Completed</button>
-                        </form>
+                        <span th:class="'status-' + ${booking.status.toLowerCase()}" th:text="${booking.status}">Pending</span>
+                    </td>
+                    <td>
+                        <div class="btn-container">
+                            <!-- Accept button (only for PENDING) -->
+                            <form th:if="${booking.status == 'PENDING'}" th:action="@{/artist/acceptBooking}" method="post" class="form-inline">
+                                <input type="hidden" name="id" th:value="${booking.id}" />
+                                <button type="submit" class="btn btn-accept">Accept</button>
+                            </form>
+                            
+                            <!-- Deny button (only for PENDING) -->
+                            <form th:if="${booking.status == 'PENDING'}" th:action="@{/artist/denyBooking}" method="post" class="form-inline">
+                                <input type="hidden" name="id" th:value="${booking.id}" />
+                                <button type="submit" class="btn btn-deny">Deny</button>
+                            </form>
+                            
+                            <!-- Edit date (for PENDING and ACCEPTED) -->
+                            <form th:if="${booking.status == 'PENDING' or booking.status == 'Accepted'}" method="post" class="edit-form" th:action="@{/artist/editBooking}">
+                                <input type="hidden" name="id" th:value="${booking.id}" />
+                                <input type="date" name="newDate" th:value="${booking.date}" />
+                                <button type="submit" class="btn btn-edit">Update Date</button>
+                            </form>
+                            
+                            <!-- Cancel button (for ACCEPTED) -->
+                            <form th:if="${booking.status == 'Accepted'}" th:action="@{/artist/cancelBooking}" method="post" class="form-inline">
+                                <input type="hidden" name="id" th:value="${booking.id}" />
+                                <button type="submit" class="btn btn-cancel">Cancel</button>
+                            </form>
+                            
+                            <!-- Mark as Completed button (for ACCEPTED) -->
+                            <form th:if="${booking.status == 'Accepted'}" th:action="@{/artist/completeBooking}" method="post" class="form-inline">
+                                <input type="hidden" name="id" th:value="${booking.id}" />
+                                <button type="submit" class="btn btn-complete">Mark as Completed</button>
+                            </form>
+                        </div>
                     </td>
                 </tr>
             </tbody>
         </table>
-    </main>
+    </div>
 </body>
 </html>

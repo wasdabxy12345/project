@@ -4,9 +4,141 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Artist Details</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+                background-color: #f5f5f5;
+            }
+            .container {
+                background-color: white;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                max-width: 900px;
+                margin: 0 auto;
+            }
+            .artist-header {
+                border-bottom: 2px solid #ddd;
+                padding-bottom: 15px;
+                margin-bottom: 20px;
+            }
+            .artist-header h1 {
+                margin: 0 0 10px 0;
+                color: #333;
+            }
+            .artist-info {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                margin-bottom: 20px;
+            }
+            .info-item {
+                padding: 10px;
+                background-color: #f9f9f9;
+                border-radius: 4px;
+            }
+            .info-label {
+                font-weight: bold;
+                color: #555;
+            }
+            .booking-section {
+                background-color: #f0f8ff;
+                border: 1px solid #0099cc;
+                padding: 20px;
+                border-radius: 8px;
+                margin: 20px 0;
+            }
+            .booking-section h2 {
+                margin-top: 0;
+                color: #0099cc;
+            }
+            .form-group {
+                margin-bottom: 15px;
+            }
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: bold;
+                color: #333;
+            }
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+            .form-group input:focus {
+                outline: none;
+                border-color: #0099cc;
+                background-color: #fff;
+            }
+            .btn-book {
+                background-color: #0099cc;
+                color: white;
+                padding: 12px 30px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+                font-weight: bold;
+            }
+            .btn-book:hover {
+                background-color: #007aa3;
+            }
+            .portfolio-section {
+                margin-top: 30px;
+            }
+            .portfolio-section h2 {
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 10px;
+                color: #333;
+            }
+            .portfolio-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 20px;
+                margin-top: 15px;
+            }
+            .portfolio-item {
+                background-color: #f9f9f9;
+                padding: 15px;
+                border-radius: 4px;
+                border: 1px solid #ddd;
+                text-align: center;
+            }
+            .portfolio-item p {
+                margin: 5px 0;
+                color: #666;
+            }
+            .file-info {
+                font-size: 12px;
+                color: #999;
+            }
+            .back-link {
+                display: inline-block;
+                margin-bottom: 15px;
+                color: #007bff;
+                text-decoration: none;
+            }
+            .back-link:hover {
+                text-decoration: underline;
+            }
+            .empty-portfolio {
+                color: #999;
+                font-style: italic;
+                padding: 20px;
+                text-align: center;
+                background-color: #f9f9f9;
+                border-radius: 4px;
+            }
+        </style>
     </head>
     <body>
         <div class="container">
+            <a href="#" th:onclick="'javascript:history.go(-1)'" class="back-link">← Back to Search</a>
             
             <div class="artist-header">
                 <h1 th:text="${artist.name}">Artist Name</h1>
@@ -26,6 +158,18 @@
                 <div class="info-item">
                     <span class="info-label">Phone:</span> <span th:text="${artist.phone}">N/A</span>
                 </div>
+            </div>
+
+            <div class="booking-section">
+                <h2>Request Booking</h2>
+                <form th:action="@{/customer/bookArtist}" method="post">
+                    <input type="hidden" name="artistId" th:value="${artist.id}">
+                    <div class="form-group">
+                        <label for="date">Select Date:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <button type="submit" class="btn-book">Request Booking</button>
+                </form>
             </div>
 
             <div class="portfolio-section">

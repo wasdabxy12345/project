@@ -281,6 +281,36 @@ public class ArtistController {
 		return "artist/manageBookings"; // loads manageBookings.html
 	}
 
+	// method to accept a booking request
+	@PostMapping("/acceptBooking")
+	public String acceptBooking(HttpSession session, @RequestParam int id) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login";
+
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		if (booking != null && booking.getArtistId() == artist.getId()) {
+			booking.setStatus("Accepted");
+			bookingRepository.save(booking);
+		}
+		return "redirect:/artist/manageBookings";
+	}
+
+	// method to deny a booking request
+	@PostMapping("/denyBooking")
+	public String denyBooking(HttpSession session, @RequestParam int id) {
+		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		if (artist == null)
+			return "redirect:/artist/login";
+
+		Booking booking = bookingRepository.findById(id).orElse(null);
+		if (booking != null && booking.getArtistId() == artist.getId()) {
+			booking.setStatus("Denied");
+			bookingRepository.save(booking);
+		}
+		return "redirect:/artist/manageBookings";
+	}
+
 	// method to edit bookings
 	@PostMapping("/editBooking")
 	public String editBooking(HttpSession session, @RequestParam int id, @RequestParam String newDate) {
