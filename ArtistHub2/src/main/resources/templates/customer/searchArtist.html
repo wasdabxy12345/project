@@ -1,40 +1,51 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+    <head th:insert="fragments/header :: head('Search Artists')">
         <title>Search Artists</title>
     </head>
     <body>
-        <h2>Search Artists</h2>
-        <form th:action="@{/customer/searchArtist}" method="get">
-            <label for="category">Filter by Category:</label>
-            <select name="category" id="category">
-                <option value="">All</option>
-                <option value="Painter">Painter</option>
-                <option value="Musician">Musician</option>
-                <option value="Dancer">Dancer</option>
-                <option value="Photographer">Photographer</option>
-            </select>
-            <button type="submit">Search</button>
-        </form>
+        <div th:insert="fragments/header :: header"></div>
+        <main class="container mt-4">
+            <h2>Search Artists</h2>
+            <form th:action="@{/customer/searchArtist}" method="get">
+                <label for="category">Filter by Category:</label>
+                <select name="category" id="category">
+                    <option 
+                        value="" 
+                        th:selected="${selectedCategory == null or selectedCategory.isEmpty()}"
+                    >
+                        All
+                    </option>
+                    <option 
+                        th:each="cat : ${allCategories}" 
+                        th:value="${cat}" 
+                        th:text="${cat}"
+                        th:selected="${cat == selectedCategory}"
+                    >
+                    </option>
+                </select>
+                <button type="submit">Filter</button>
+            </form>
 
-        <div th:if="${artists != null}">
-            <h3>Artist Results:</h3>
-            <table border="1">
-                <tr>
-                    <th>Name</th>
-                    <th>Category</th>
-                    <th>Experience</th>
-                    <th>Price</th>
-                </tr>
-                <tr th:each="artist : ${artists}">
-                    <td><a th:href="@{/customer/viewArtist/{id}(id=${artist.id})}" th:text="${artist.name}">Artist Name</a></td>
-                    <td th:text="${artist.category}">Artist Category</td>
-                    <td th:text="${artist.xp}">Artist Experience</td>
-                    <td th:text="${artist.price}">Artist Price</td>
-                </tr>
-            </table>
-        </div>
+            <div th:if="${artists != null}">
+                <h3>Artist Results:</h3>
+                <table border="1">
+                    <tr>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Experience</th>
+                        <th>Price</th>
+                    </tr>
+                    <tr th:each="artist : ${artists}">
+                        <td><a th:href="@{/customer/viewArtist/{id}(id=${artist.id})}" th:text="${artist.name}">Artist Name</a></td>
+                        <td th:text="${artist.category}">Artist Category</td>
+                        <td th:text="${artist.xp}">Artist Experience</td>
+                        <td th:text="${artist.price}">Artist Price</td>
+                    </tr>
+                </table>
+            </div>
+        </main>
+        <div th:insert="fragments/footer :: footer"></div>
+        <div th:insert="fragments/footer :: scripts"></div>
     </body>
 </html>

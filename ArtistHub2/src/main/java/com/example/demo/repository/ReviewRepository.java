@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.Model.Review;
+import com.example.demo.model.Review;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 	List<Review> findByArtistId(Long artistId);

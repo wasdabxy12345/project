@@ -1,20 +1,42 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:insert="fragments/header :: head('Admin Dashboard')">
     <title>Admin Dashboard</title>
 </head>
 <body>
-
-<h2>Admin Dashboard</h2>
-
-<ul>
-    <li><a th:href="@{/admin/manageArtists}">Manage Artists</a></li>
-    <li><a th:href="@{/admin/manageCustomers}">Manage Customers</a></li>
-    <li><a th:href="@{/admin/viewBookings}">View All Bookings</a></li>
-    <li><a th:href="@{/admin/viewReviews}">View All Reviews</a></li>
-    <li><a th:href="@{/admin/viewFeedbacks}">View All Feedback</a></li>
-</ul>
-
+    <div th:insert="fragments/header :: header"></div>
+    <main class="container mt-4">
+        <h2>Admin Dashboard</h2>
+        <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Artists</h5>
+                        <a th:href="@{/admin/manageArtists}" class="btn btn-primary">Open</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Manage Customers</h5>
+                        <a th:href="@{/admin/manageCustomers}" class="btn btn-primary">Open</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title">Bookings / Reviews / Feedback</h5>
+                        <a th:href="@{/admin/viewBookings}" class="btn btn-secondary me-2">Bookings</a>
+                        <a th:href="@{/admin/viewReviews}" class="btn btn-secondary me-2">Reviews</a>
+                        <a th:href="@{/admin/viewFeedbacks}" class="btn btn-secondary">Feedback</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div th:insert="fragments/footer :: footer"></div>
+    <div th:insert="fragments/footer :: scripts"></div>
 </body>
 </html>

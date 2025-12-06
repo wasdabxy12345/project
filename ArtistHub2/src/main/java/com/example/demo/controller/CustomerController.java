@@ -3,7 +3,6 @@ package com.example.demo.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,12 +12,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.Model.Artist;
-import com.example.demo.Model.Booking;
-import com.example.demo.Model.Customer;
-import com.example.demo.Model.Feedback;
-import com.example.demo.Model.PerformanceFile;
-import com.example.demo.Model.Review;
+import com.example.demo.model.Artist;
+import com.example.demo.model.Booking;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Feedback;
+import com.example.demo.model.PerformanceFile;
+import com.example.demo.model.Review;
 import com.example.demo.repository.ArtistRepository;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.CustomerRepository;
@@ -32,18 +31,19 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/customer")
 public class CustomerController {
 
-	@Autowired
 	private final CustomerRepository customerRepo;
-	@Autowired
     private final ArtistRepository artistRepo;
-	@Autowired
 	private final PerformanceFileRepository performanceFileRepo;
-	@Autowired
 	private final BookingRepository bookingRepo;
-	@Autowired
 	private final FeedbackRepository feedbackRepo;
-	@Autowired
 	private final ReviewRepository reviewRepo;
+
+	private static final String CUS = "customer";
+	private static final String LOGIN = "redirect:/customer/login";
+	private static final String LC = "loggedCustomer";
+	private static final String CUS1 = "Customer";
+	private static final String VF = "redirect:/customer/viewFeedbacks";
+	private static final String VR = "redirect:/customer/viewReviews";
 
 	public CustomerController(CustomerRepository customerRepo, ArtistRepository artistRepo, PerformanceFileRepository performanceFileRepo, BookingRepository bookingRepo, FeedbackRepository feedbackRepo, ReviewRepository reviewRepo) {
 		this.customerRepo = customerRepo;
@@ -57,16 +57,15 @@ public class CustomerController {
 	// Show Registration Page
 	@GetMapping("/register")
 	public String showRegisterPage(Model model) {
-		model.addAttribute("customer", new Customer());
+		model.addAttribute(CUS, new Customer());
 		return "register/customerRegister";
 	}
 
 	// Handle Form Submission
-	@SuppressWarnings("null")
 	@PostMapping("/register")
 	public String registerCustomer(@ModelAttribute Customer customer) {
 		customerRepo.save(customer); // Saves to DB
-		return "redirect:/customer/login"; // Redirect after success
+		return LOGIN; // Redirect after success
 	}
 
 	// Show login page
@@ -82,7 +81,7 @@ public class CustomerController {
 		Customer loggedCustomer = customerRepo.findByEmailAndPassword(customer.getEmail(), customer.getPassword());
 
 		if (loggedCustomer != null){
-			session.setAttribute("loggedCustomer", loggedCustomer);
+			session.setAttribute(LC, loggedCustomer);
 			return "redirect:/customer/dashboard";
 		}
 		model.addAttribute("error", "Invalid email or password");
@@ -91,28 +90,28 @@ public class CustomerController {
 
 	@GetMapping("/dashboard")
 	public String customerDashboard(HttpSession session, Model model) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
-		model.addAttribute("customer", customer);
+			return LOGIN;
+		model.addAttribute(CUS, customer);
 		return "dashboard/customerDashboard";
 	}
 
 	// method to manage profile
 	@GetMapping("/manageProfile")
 	public String manageProfile(HttpSession session, Model model) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
-		model.addAttribute("customer", customer);
+			return LOGIN;
+		model.addAttribute(CUS, customer);
 		return "customer/manageProfile";
 	}
 
 	@PostMapping("/manageProfile")
 	public String updateProfile(HttpSession session, @ModelAttribute Customer updatedCustomer) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		customer.setName(updatedCustomer.getName());
 		customer.setEmail(updatedCustomer.getEmail());
@@ -124,24 +123,27 @@ public class CustomerController {
 	// methtod to view artists details and search by category
 	@GetMapping("/searchArtist")
 	public String searchArtist(HttpSession session, Model model, String category) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
-		
+			return LOGIN;
+		List<String> allCategories = artistRepo.findDistinctCategories();
+		model.addAttribute("allCategories", allCategories);
+		model.addAttribute("selectedCategory", category);
 		if (category != null && !category.isEmpty()) {
 			model.addAttribute("artists", artistRepo.findByCategory(category));
 		} else {
 			model.addAttribute("artists", artistRepo.findAll());
 		}
+		
 		return "customer/searchArtist";
 	}
 
 	// method to view artist details and portfolio
 	@GetMapping("/viewArtist/{id}")
 	public String viewArtist(HttpSession session, Model model, @PathVariable Long id) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 		
 		Artist artist = artistRepo.findById(id).orElse(null);
 		if (artist == null)
@@ -157,9 +159,9 @@ public class CustomerController {
 	// method to book an artist
 	@PostMapping("/bookArtist")
 	public String bookArtist(HttpSession session, @RequestParam Long artistId, @RequestParam String date, Model model) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 		
 		Artist artist = artistRepo.findById(artistId).orElse(null);
 		if (artist == null)
@@ -181,9 +183,9 @@ public class CustomerController {
 	// method to view all bookings for the logged-in customer
 	@GetMapping("/viewBookings")
 	public String viewBookings(HttpSession session, Model model) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		List<Booking> bookings = bookingRepo.findByCustomerId((long) customer.getId());
 		model.addAttribute("bookings", bookings);
@@ -193,9 +195,9 @@ public class CustomerController {
 	// method to cancel a booking by customer
 	@PostMapping("/cancelBooking")
 	public String cancelBooking(HttpSession session, @RequestParam int id) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		Booking booking = bookingRepo.findById(id).orElse(null);
 		if (booking != null && booking.getCustomerId() == customer.getId()) {
@@ -208,11 +210,11 @@ public class CustomerController {
 	// method to view feedbacks for the logged-in customer
 	@GetMapping("/viewFeedbacks")
 	public String viewFeedbacks(HttpSession session, Model model) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
-		List<Feedback> feedbacks = feedbackRepo.findByUserTypeAndUserId("Customer", customer.getId());
+		List<Feedback> feedbacks = feedbackRepo.findByUserTypeAndUserId(CUS1, customer.getId());
 		model.addAttribute("feedbacks", feedbacks);
 		model.addAttribute("feedback", new Feedback());
 		return "customer/viewFeedbacks";
@@ -221,12 +223,12 @@ public class CustomerController {
 	// method to add new feedback
 	@PostMapping("/addFeedback")
 	public String addFeedback(HttpSession session, @RequestParam String message) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		Feedback feedback = new Feedback();
-		feedback.setUserType("Customer");
+		feedback.setUserType(CUS1);
 		feedback.setUserId(customer.getId());
 		feedback.setUserName(customer.getName());
 		feedback.setMessage(message);
@@ -234,57 +236,57 @@ public class CustomerController {
 
 		feedbackRepo.save(feedback);
 
-		return "redirect:/customer/viewFeedbacks";
+		return VF;
 	}
 
 	// method to edit existing feedback
 	@PostMapping("/editFeedback")
 	public String editFeedback(HttpSession session, @RequestParam Long id, @RequestParam String message) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		Feedback feedback = feedbackRepo.findById(id).orElse(null);
 		if (feedback == null)
-			return "redirect:/customer/viewFeedbacks";
+			return VF;
 
-		if (!"Customer".equals(feedback.getUserType()) || !feedback.getUserId().equals(customer.getId())) {
-			return "redirect:/customer/viewFeedbacks";
+		if (!CUS1.equals(feedback.getUserType()) || !feedback.getUserId().equals(customer.getId())) {
+			return VF;
 		}
 
 		feedback.setMessage(message);
 		feedback.setDate(LocalDateTime.now());
 		feedbackRepo.save(feedback);
 
-		return "redirect:/customer/viewFeedbacks";
+		return VF;
 	}
 
 	// method to delete feedback
 	@PostMapping("/deleteFeedback")
 	public String deleteFeedback(HttpSession session, @RequestParam Long id) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		Feedback feedback = feedbackRepo.findById(id).orElse(null);
 		if (feedback == null)
-			return "redirect:/customer/viewFeedbacks";
+			return VF;
 
-		if (!"Customer".equals(feedback.getUserType()) || !feedback.getUserId().equals(customer.getId())) {
-			return "redirect:/customer/viewFeedbacks";
+		if (!CUS1.equals(feedback.getUserType()) || !feedback.getUserId().equals(customer.getId())) {
+			return VF;
 		}
 
 		feedbackRepo.deleteById(id);
 
-		return "redirect:/customer/viewFeedbacks";
+		return VF;
 	}
 
 	// method to view reviews for the logged-in customer
 	@GetMapping("/viewReviews")
 	public String viewReviews(HttpSession session, Model model) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		List<Review> reviews = reviewRepo.findByCustomerId(customer.getId());
 		List<Booking> completedBookings = bookingRepo.findByCustomerId((long) customer.getId());
@@ -300,16 +302,16 @@ public class CustomerController {
 	// method to add new review
 	@PostMapping("/addReview")
 	public String addReview(HttpSession session, @RequestParam Long artistId, @RequestParam String comment, @RequestParam int rating) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		if (rating < 1 || rating > 5)
-			return "redirect:/customer/viewReviews";
+			return VR;
 
 		Artist artist = artistRepo.findById(artistId).orElse(null);
 		if (artist == null)
-			return "redirect:/customer/viewReviews";
+			return VR;
 
 		Review review = new Review();
 		review.setArtistId(artistId);
@@ -322,25 +324,25 @@ public class CustomerController {
 
 		reviewRepo.save(review);
 
-		return "redirect:/customer/viewReviews";
+		return VR;
 	}
 
 	// method to edit existing review
 	@PostMapping("/editReview")
 	public String editReview(HttpSession session, @RequestParam Long id, @RequestParam String comment, @RequestParam int rating) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		if (rating < 1 || rating > 5)
-			return "redirect:/customer/viewReviews";
+			return VR;
 
 		Review review = reviewRepo.findById(id).orElse(null);
 		if (review == null)
-			return "redirect:/customer/viewReviews";
+			return VR;
 
 		if (!review.getCustomerId().equals(customer.getId())) {
-			return "redirect:/customer/viewReviews";
+			return VR;
 		}
 
 		review.setComment(comment);
@@ -348,26 +350,26 @@ public class CustomerController {
 		review.setDate(LocalDateTime.now());
 		reviewRepo.save(review);
 
-		return "redirect:/customer/viewReviews";
+		return VR;
 	}
 
 	// method to delete review
 	@PostMapping("/deleteReview")
 	public String deleteReview(HttpSession session, @RequestParam Long id) {
-		Customer customer = (Customer) session.getAttribute("loggedCustomer");
+		Customer customer = (Customer) session.getAttribute(LC);
 		if (customer == null)
-			return "redirect:/customer/login";
+			return LOGIN;
 
 		Review review = reviewRepo.findById(id).orElse(null);
 		if (review == null)
-			return "redirect:/customer/viewReviews";
+			return VR;
 
 		if (!review.getCustomerId().equals(customer.getId())) {
-			return "redirect:/customer/viewReviews";
+			return VR;
 		}
 
 		reviewRepo.deleteById(id);
 
-		return "redirect:/customer/viewReviews";
+		return VR;
 	}
 }

@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,10 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.example.demo.Model.Artist;
-import com.example.demo.Model.Customer;
-import com.example.demo.Model.Feedback;
-import com.example.demo.Model.Review;
+import com.example.demo.model.Artist;
+import com.example.demo.model.Customer;
+import com.example.demo.model.Feedback;
+import com.example.demo.model.Review;
 import com.example.demo.repository.ArtistRepository;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.CustomerRepository;
@@ -24,16 +23,24 @@ import com.example.demo.repository.ReviewRepository;
 @RequestMapping("/admin")
 public class AdminController {
 
-	@Autowired
-	private ArtistRepository artistRepository;
-	@Autowired
-	private CustomerRepository customerRepository;
-	@Autowired
-	private ReviewRepository reviewRepository;
-	@Autowired
-	private BookingRepository bookingRepository;
-	@Autowired
-	private FeedbackRepository feedbackRepository;
+	private final ArtistRepository artistRepository;
+	private final CustomerRepository customerRepository;
+	private final ReviewRepository reviewRepository;
+	private final BookingRepository bookingRepository;
+	private final FeedbackRepository feedbackRepository;
+
+	private static final String MANAGEARTISTS = "redirect:/admin/manageArtists";
+	private static final String REV = "reviews";
+
+	public AdminController(ArtistRepository artistRepository, CustomerRepository customerRepository,
+			ReviewRepository reviewRepository, BookingRepository bookingRepository,
+			FeedbackRepository feedbackRepository) {
+		this.artistRepository = artistRepository;
+		this.customerRepository = customerRepository;
+		this.reviewRepository = reviewRepository;
+		this.bookingRepository = bookingRepository;
+		this.feedbackRepository = feedbackRepository;
+	}
 
 	// Shows the admin login page
 	@GetMapping("/login")
@@ -44,7 +51,7 @@ public class AdminController {
 	@PostMapping("/login")
 	public String processAdminLogin(@RequestParam String username, @RequestParam String password, Model model) {
 
-		// simplest hard-coded validation
+		// hardcoded validation
 		if ("admin".equals(username) && "admin123".equals(password))
 			return "redirect:/admin/dashboard";
 
@@ -54,7 +61,7 @@ public class AdminController {
 	}
 
 	@GetMapping("/dashboard")
-	public String AdminDashboard() {
+	public String adminDashboard() {
 		return "dashboard/adminDashboard"; // loads adminDashboard.html
 	}
 
@@ -67,38 +74,35 @@ public class AdminController {
 
 	@PostMapping("/updateArtistStatus")
 	public String updateArtistStatus(@RequestParam Long artistId, @RequestParam String newStatus) {
-		@SuppressWarnings("null")
 		Artist artist = artistRepository.findById(artistId).orElse(null);
 		if (artist != null) {
 			artist.setStatus(newStatus);
 			artistRepository.save(artist);
 		}
-		return "redirect:/admin/manageArtists";
+		return MANAGEARTISTS;
 	}
 
 	@GetMapping("/artist/view/{id}")
 	public String viewArtist(@PathVariable Long id, Model model) {
-		@SuppressWarnings("null")
 		Artist artist = artistRepository.findById(id).orElse(null);
 		if (artist != null) {
 			model.addAttribute("artist", artist);
 
 			// fetch reviews for this artist
 			List<Review> reviews = reviewRepository.findByArtistId(id);
-			model.addAttribute("reviews", reviews);
+			model.addAttribute(REV, reviews);
 
 			return "admin/viewArtist"; // loads viewArtist.html
 		}
-		return "redirect:/admin/manageArtists";
+		return MANAGEARTISTS;
 	}
 
-	@SuppressWarnings("null")
 	@GetMapping("/artist/delete/{id}")
 	public String deleteArtist(@PathVariable Long id) {
 
 		artistRepository.deleteById(id);
 
-		return "redirect:/admin/manageArtists";
+		return MANAGEARTISTS;
 	}
 
 	@GetMapping("/manageCustomers")
@@ -110,21 +114,19 @@ public class AdminController {
 
 	@GetMapping("/customer/view/{id}")
 	public String viewCustomer(@PathVariable Long id, Model model) {
-		@SuppressWarnings("null")
 		Customer customer = customerRepository.findById(id).orElse(null);
 		if (customer != null) {
 			model.addAttribute("customer", customer);
 
 			// fetch reviews for this artist
 			List<Review> reviews = reviewRepository.findByCustomerId(id);
-			model.addAttribute("reviews", reviews);
+			model.addAttribute(REV, reviews);
 
 			return "admin/viewCustomer"; // loads viewCustomer.html
 		}
 		return "redirect:/admin/manageCustomers";
 	}
 
-	@SuppressWarnings("null")
 	@GetMapping("/customer/delete/{id}")
 	public String deleteCustomer(@PathVariable Long id) {
 
@@ -142,7 +144,7 @@ public class AdminController {
 	@GetMapping("/viewReviews")
 	public String viewReviews(Model model) {
 		List<Review> reviews = reviewRepository.findAll();
-		model.addAttribute("reviews", reviews);
+		model.addAttribute(REV, reviews);
 
 		return "admin/viewReviews";
 	}

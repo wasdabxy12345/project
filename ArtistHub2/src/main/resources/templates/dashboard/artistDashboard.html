@@ -1,32 +1,29 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-<head>
-	<meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:insert="fragments/header :: head('Artist Dashboard')">
 	<title>Artist Dashboard</title>
 </head>
-
 <body>
+	<div th:insert="fragments/header :: header"></div>
+	<main class="container mt-4">
+		<h2>Artist Dashboard</h2>
 
-	<h2>Artist Dashboard</h2>
+		<div th:if="${artist.status == 'PENDING'}" class="alert alert-warning">
+			<h5>Your profile is under review.</h5>
+			<p>Please wait for admin approval before accessing full features.</p>
+		</div>
 
-	<!-- CASE 1: Artist is still pending -->
-	<div th:if="${artist.status == 'PENDING'}">
-		<h3>Your profile is under review.</h3>
-		<p>Please wait for admin approval before accessing full features.</p>
-	</div>
-
-	<!-- CASE 2: Artist is approved -->
-	<div th:if="${artist.status == 'APPROVED'}">
-		<ul>
-			<li><a th:href="@{/artist/manageProfile}">Manage Profile</a></li>
-			<li><a th:href="@{/artist/manageFiles/index}">Manage Performance Files</a></li>
-			<li><a th:href="@{/artist/manageFeedbacks}">Manage Feedback</a></li>
-			<li><a th:href="@{/artist/viewReviews}">View All Reviews</a></li>
-			<li><a th:href="@{/artist/manageBookings}">Manage Bookings</a></li>
-		</ul>
-	</div>
-
+		<div th:if="${artist.status == 'APPROVED'}">
+			<div class="list-group">
+				<a th:href="@{/artist/manageProfile}" class="list-group-item list-group-item-action">Manage Profile</a>
+				<a th:href="@{/artist/manageFiles/index}" class="list-group-item list-group-item-action">Manage Performance Files</a>
+				<a th:href="@{/artist/manageFeedbacks}" class="list-group-item list-group-item-action">Manage Feedback</a>
+				<a th:href="@{/artist/viewReviews}" class="list-group-item list-group-item-action">View All Reviews</a>
+				<a th:href="@{/artist/manageBookings}" class="list-group-item list-group-item-action">Manage Bookings</a>
+			</div>
+		</div>
+	</main>
+	<div th:insert="fragments/footer :: footer"></div>
+	<div th:insert="fragments/footer :: scripts"></div>
 </body>
-
 </html>

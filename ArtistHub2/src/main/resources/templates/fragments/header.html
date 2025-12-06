@@ -1,0 +1,42 @@
+<div xmlns:th="http://www.thymeleaf.org">
+    <th:block th:fragment="head(title)">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title th:text="${title}">Artist Hub</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    </th:block>
+
+    <th:block th:fragment="header">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" th:href="@{/}">Artist Hub</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" th:href="@{/customer/searchArtist}">Search Artists</a></li>
+                    </ul>
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown">
+                            <button class="nav-link dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }">Login</button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="loginDropdown">
+                                <li><a class="dropdown-item" th:href="@{/admin/login}">Admin</a></li>
+                                <li><a class="dropdown-item" th:href="@{/artist/login}">Artist</a></li>
+                                <li><a class="dropdown-item" th:href="@{/customer/login}">Customer</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown ms-2">
+                            <button class="nav-link dropdown-toggle" type="button" id="registerDropdown" data-bs-toggle="dropdown" aria-expanded="false" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }">Register</button>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="registerDropdown">
+                                <li><a class="dropdown-item" th:href="@{/artist/register}">Artist</a></li>
+                                <li><a class="dropdown-item" th:href="@{/customer/register}">Customer</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </th:block>
+</div>

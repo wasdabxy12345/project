@@ -1,23 +1,22 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
-<head>
-    <meta charset="UTF-8">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:insert="fragments/header :: head('Customer Dashboard')">
     <title>Customer Dashboard</title>
 </head>
-
 <body>
+    <div th:insert="fragments/header :: header"></div>
+    <main class="container mt-4">
+        <h2>Customer Dashboard</h2>
 
-    <h2>Customer Dashboard</h2>
-
-    <ul>
-        <li><a th:href="@{/customer/manageProfile}">Manage Profile</a></li>
-        <li><a th:href="@{/customer/searchArtist}">Search Artist</a></li>
-        <li><a th:href="@{/customer/viewBookings}">View Bookings</a></li>
-        <li><a th:href="@{/customer/viewFeedbacks}">View Feedbacks</a></li>
-        <li><a th:href="@{/customer/viewReviews}">View Reviews</a></li>
-    </ul>
-
+        <div class="list-group">
+            <a th:href="@{/customer/manageProfile}" class="list-group-item list-group-item-action">Manage Profile</a>
+            <a th:href="@{/customer/searchArtist}" class="list-group-item list-group-item-action">Search Artist</a>
+            <a th:href="@{/customer/viewBookings}" class="list-group-item list-group-item-action">View Bookings</a>
+            <a th:href="@{/customer/viewFeedbacks}" class="list-group-item list-group-item-action">View Feedbacks</a>
+            <a th:href="@{/customer/viewReviews}" class="list-group-item list-group-item-action">View Reviews</a>
+        </div>
+    </main>
+    <div th:insert="fragments/footer :: footer"></div>
+	<div th:insert="fragments/footer :: scripts"></div>
 </body>
-
 </html>

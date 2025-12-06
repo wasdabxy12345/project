@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Customer Registration</title>
-</head>
+<head th:insert="fragments/header :: head('Customer Registration')"></head>
 <body>
-
-<h2>Customer Registration</h2>
-
-<form th:action="@{/customer/register}" th:object="${customer}" method="post">
-
-    <label>Name:</label><br>
-    <input type="text" th:field="*{name}" required>
-    <br><br>
-
-    <label>Email:</label><br>
-    <input type="email" th:field="*{email}" required>
-    <br><br>
-
-    <label>Password:</label><br>
-    <input type="password" th:field="*{password}" required>
-    <br><br>
-
-    <button type="submit">Register</button>
-</form>
-
+    <div th:insert="fragments/header :: header"></div>
+    <main class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title mb-3">Customer Registration</h3>
+                        <form th:action="@{/customer/register}" th:object="${customer}" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Name</label>
+                                <input type="text" class="form-control" th:field="*{name}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" class="form-control" th:field="*{email}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input type="password" class="form-control" th:field="*{password}" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Register</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div th:insert="fragments/footer :: footer"></div>
+    <div th:insert="fragments/footer :: scripts"></div>
 </body>
 </html>

@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.example.demo.Model.Artist;
-import com.example.demo.Model.Booking;
-import com.example.demo.Model.Feedback;
-import com.example.demo.Model.PerformanceFile;
-import com.example.demo.Model.Review;
+import com.example.demo.model.Artist;
+import com.example.demo.model.Booking;
+import com.example.demo.model.Feedback;
+import com.example.demo.model.PerformanceFile;
+import com.example.demo.model.Review;
 import com.example.demo.repository.ArtistRepository;
 import com.example.demo.repository.BookingRepository;
 import com.example.demo.repository.FeedbackRepository;
@@ -28,30 +28,47 @@ import com.example.demo.repository.ReviewRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import java.util.logging.Logger;
+
 @Controller
 @RequestMapping("/artist")
-public class ArtistController {
+public class ArtistController implements Serializable {
+	private static final long serialVersionUID = 1905122041950251207L;
 
-	@Autowired
-	private final ArtistRepository artistRepo;
-	@Autowired
-	private final PerformanceFileRepository performanceFileRepo;
-	@Autowired
-	private FeedbackRepository feedbackRepository;
-	@Autowired
-	private ReviewRepository reviewRepository;
-	@Autowired
-	private BookingRepository bookingRepository;
+	transient Logger logger = Logger.getLogger(getClass().getName());
 
-	public ArtistController(ArtistRepository artistRepo, PerformanceFileRepository performanceFileRepo) {
+	// @Autowired
+	private transient ArtistRepository artistRepo;
+	// @Autowired
+	private transient PerformanceFileRepository performanceFileRepo;
+	// @Autowired
+	private transient FeedbackRepository feedbackRepository;
+	// @Autowired
+	private transient ReviewRepository reviewRepository;
+	// @Autowired
+	private transient BookingRepository bookingRepository;
+
+	private static final String ART = "artist";
+	private static final String LOGIN = "redirect:/artist/login";
+	private static final String LOGART = "loggedArtist";
+	private static final String ART1 = "Artist";
+	private static final String FB = "redirect:/artist/manageFeedbacks";
+	private static final String BK = "redirect:/artist/manageBookings";
+
+	public ArtistController(ArtistRepository artistRepo, PerformanceFileRepository performanceFileRepo, 
+			FeedbackRepository feedbackRepository, ReviewRepository reviewRepository,
+			BookingRepository bookingRepository) {
 		this.artistRepo = artistRepo;
 		this.performanceFileRepo = performanceFileRepo;
+		this.feedbackRepository = feedbackRepository;
+		this.reviewRepository = reviewRepository;
+		this.bookingRepository = bookingRepository;
 	}
 
 	// Show Registration Page
 	@GetMapping("/register")
 	public String showRegisterPage(Model model) {
-		model.addAttribute("artist", new Artist());
+		model.addAttribute(ART, new Artist());
 		return "register/artistRegister";
 	}
 
@@ -59,9 +76,9 @@ public class ArtistController {
 	@PostMapping("/register")
 	public String registerArtist(@ModelAttribute Artist artist) {
 		// debug: log incoming artist fields
-		System.out.println("Registering Artist - name=" + artist.getName() + ", Email:" + artist.getEmail());
+		logger.info("Registering Artist - name=" + artist.getName() + ", Email:" + artist.getEmail());
 		artistRepo.save(artist); // Saves to DB
-		return "redirect:/artist/login"; // Redirect after success
+		return LOGIN; // Redirect after success
 	}
 
 	// Show login page
@@ -78,7 +95,7 @@ public class ArtistController {
 		Artist loggedArtist = artistRepo.findByEmailAndPassword(email, password);
 
 		if (loggedArtist != null) {
-			session.setAttribute("loggedArtist", loggedArtist);
+			session.setAttribute(LOGART, loggedArtist);
 			return "redirect:/artist/dashboard"; // Replace with actual dashboard later
 		}
 		model.addAttribute("error", "Invalid email or password");
@@ -87,27 +104,27 @@ public class ArtistController {
 
 	@GetMapping("/dashboard")
 	public String artistDashboard(HttpSession session, Model model) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
-		model.addAttribute("artist", artist);
+			return LOGIN; // Redirect to login if not logged in
+		model.addAttribute(ART, artist);
 		return "dashboard/artistDashboard"; // loads artistDashboard.html
 	}
 
 	@GetMapping("/manageProfile")
 	public String manageProfile(HttpSession session, Model model) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
-		model.addAttribute("artist", artist);
+			return LOGIN; // Redirect to login if not logged in
+		model.addAttribute(ART, artist);
 		return "artist/manageProfile"; // loads manageProfile.html
 	}
 
 	@PostMapping("/manageProfile")
 	public String updateProfile(HttpSession session, @ModelAttribute Artist updatedArtist) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		// Update fields
 		artist.setName(updatedArtist.getName());
@@ -117,15 +134,15 @@ public class ArtistController {
 		artist.setPrice(updatedArtist.getPrice());
 
 		artistRepo.save(artist); // Save updated artist
-		session.setAttribute("loggedArtist", artist); // Update session attribute
+		session.setAttribute(LOGART, artist); // Update session attribute
 		return "redirect:/artist/manageProfile"; // Redirect back to profile management
 	}
 
 	@GetMapping("/manageFiles/index")
 	public String manageFiles(HttpSession session, Model model) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		List<PerformanceFile> files = performanceFileRepo.findAll(); // <-- load files
 		model.addAttribute("files", files);
@@ -134,9 +151,9 @@ public class ArtistController {
 
 	@PostMapping("/manageFiles/upload")
 	public String uploadFile(HttpSession session, @RequestParam("file") MultipartFile file) throws IOException {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		if (!file.isEmpty()) {
 			// Create PerformanceFile entity
@@ -166,9 +183,9 @@ public class ArtistController {
 
 	@GetMapping("/deleteFile/{id}")
 	public String deleteFile(HttpSession session, @PathVariable Long id) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login";
+			return LOGIN;
 
 		performanceFileRepo.deleteById(id);
 
@@ -179,12 +196,12 @@ public class ArtistController {
 	// load feedback management page
 	@GetMapping("/manageFeedbacks")
 	public String manageFeedbacks(HttpSession session, Model model) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		List<Feedback> feedbacks = feedbackRepository
-				.findByUserTypeAndUserId("Artist", artist.getId());
+				.findByUserTypeAndUserId(ART1, artist.getId());
 		model.addAttribute("feedbacks", feedbacks);
 		return "artist/manageFeedbacks"; // loads manageFeedbacks.html
 	}
@@ -192,12 +209,12 @@ public class ArtistController {
 	// create new feedback
 	@PostMapping("/createFeedback")
 	public String createFeedback(HttpSession session, @RequestParam String message) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		Feedback feedback = new Feedback();
-		feedback.setUserType("Artist");
+		feedback.setUserType(ART1);
 		feedback.setUserId(artist.getId());
 		feedback.setUserName(artist.getName());
 		feedback.setMessage(message);
@@ -205,63 +222,63 @@ public class ArtistController {
 
 		feedbackRepository.save(feedback);
 
-		return "redirect:/artist/manageFeedbacks"; // Redirect back to feedback management
+		return FB; // Redirect back to feedback management
 	}
 
 	// edit existing feedback
 	@PostMapping("/editFeedback")
 	public String editFeedback(HttpSession session, @RequestParam Long id, @RequestParam String message) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login";
+			return LOGIN; // Redirect to login if not logged in
 
 		Feedback feedback = feedbackRepository.findById(id).orElse(null);
 		// If feedback not found or not owned by this artist, just redirect back
 		if (feedback == null)
-			return "redirect:/artist/manageFeedbacks";
+			return FB;
 
 		// Ensure only the artist who created the feedback can edit it
-		if (!"Artist".equals(feedback.getUserType()) || feedback.getUserId() == null
+		if (!ART1.equals(feedback.getUserType()) || feedback.getUserId() == null
 				|| !feedback.getUserId().equals(artist.getId())) {
-			return "redirect:/artist/manageFeedbacks";
+			return FB;
 		}
 
 		feedback.setMessage(message);
 		feedback.setDate(java.time.LocalDateTime.now());
 		feedbackRepository.save(feedback);
 
-		return "redirect:/artist/manageFeedbacks";
+		return FB; // Redirect back to feedback management
 	}
 
 	// delete existing feedback
 	@PostMapping("/deleteFeedback")
 	public String deleteFeedback(HttpSession session, @RequestParam Long id) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login";
+			return LOGIN; // Redirect to login if not logged in
 
 		Feedback feedback = feedbackRepository.findById(id).orElse(null);
 		// If feedback not found or not owned by this artist, just redirect back
 		if (feedback == null)
-			return "redirect:/artist/manageFeedbacks";
+			return FB;
 
 		// Ensure only the artist who created the feedback can delete it
-		if (!"Artist".equals(feedback.getUserType()) || feedback.getUserId() == null
+		if (!ART1.equals(feedback.getUserType()) || feedback.getUserId() == null
 				|| !feedback.getUserId().equals(artist.getId())) {
-			return "redirect:/artist/manageFeedbacks";
+			return FB;
 		}
 
 		feedbackRepository.deleteById(id);
 
-		return "redirect:/artist/manageFeedbacks";
+		return FB; // Redirect back to feedback management
 	}
 
 	// method to view all reviews given by customers to the artist
 	@GetMapping("/viewReviews")
 	public String viewReviews(HttpSession session, Model model) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		// Assuming there's a method in feedbackRepository to fetch reviews for the artist
 		List<Review> reviews = reviewRepository.findByArtistId(artist.getId());
@@ -272,9 +289,9 @@ public class ArtistController {
 	// method to view all bookings for the logged-in artist
 	@GetMapping("/manageBookings")
 	public String viewBookings(HttpSession session, Model model) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		List<Booking> bookings = bookingRepository.findByArtistId(artist.getId());
 		model.addAttribute("bookings", bookings);
@@ -284,75 +301,75 @@ public class ArtistController {
 	// method to accept a booking request
 	@PostMapping("/acceptBooking")
 	public String acceptBooking(HttpSession session, @RequestParam int id) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login";
+			return LOGIN;
 
 		Booking booking = bookingRepository.findById(id).orElse(null);
 		if (booking != null && booking.getArtistId() == artist.getId()) {
 			booking.setStatus("Accepted");
 			bookingRepository.save(booking);
 		}
-		return "redirect:/artist/manageBookings";
+		return BK;
 	}
 
 	// method to deny a booking request
 	@PostMapping("/denyBooking")
 	public String denyBooking(HttpSession session, @RequestParam int id) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login";
+			return LOGIN;
 
 		Booking booking = bookingRepository.findById(id).orElse(null);
 		if (booking != null && booking.getArtistId() == artist.getId()) {
 			booking.setStatus("Denied");
 			bookingRepository.save(booking);
 		}
-		return "redirect:/artist/manageBookings";
+		return BK;
 	}
 
 	// method to edit bookings
 	@PostMapping("/editBooking")
 	public String editBooking(HttpSession session, @RequestParam int id, @RequestParam String newDate) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		Booking booking = bookingRepository.findById(id).orElse(null);
 		if (booking != null && booking.getArtistId() == artist.getId()) {
 			booking.setDate(newDate);
 			bookingRepository.save(booking);
 		}
-		return "redirect:/artist/manageBookings";
+		return BK;
 	}
 
 	// method to cancel a booking
 	@PostMapping("/cancelBooking")
 	public String cancelBooking(HttpSession session, @RequestParam int id) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		Booking booking = bookingRepository.findById(id).orElse(null);
 		if (booking != null && booking.getArtistId() == artist.getId()) {
 			booking.setStatus("Cancelled");
 			bookingRepository.save(booking);
 		}
-		return "redirect:/artist/manageBookings";
+		return BK;
 	}
 
 	// method to complete a booking
 	@PostMapping("/completeBooking")
 	public String completeBooking(HttpSession session, @RequestParam int id) {
-		Artist artist = (Artist) session.getAttribute("loggedArtist");
+		Artist artist = (Artist) session.getAttribute(LOGART);
 		if (artist == null)
-			return "redirect:/artist/login"; // Redirect to login if not logged in
+			return LOGIN; // Redirect to login if not logged in
 
 		Booking booking = bookingRepository.findById(id).orElse(null);
 		if (booking != null && booking.getArtistId() == artist.getId()) {
 			booking.setStatus("Completed");
 			bookingRepository.save(booking);
 		}
-		return "redirect:/artist/manageBookings";
+		return BK;
 	}
 }

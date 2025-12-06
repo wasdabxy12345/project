@@ -1,29 +1,35 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Artist Hub - Home</title>
-</head>
+<head th:insert="fragments/header :: head('Home - Artist Hub')"></head>
 <body>
+    <div th:insert="fragments/header :: header"></div>
+    <main class="container mt-4">
+        <h2>Welcome to Artist Hub</h2>
 
-<h2>Welcome to Artist Hub</h2>
-
-<h3>Admin</h3>
-<ul>
-    <li><a th:href="@{/admin/login}">Admin Login</a></li>
-</ul>
-
-<h3>Artist</h3>
-<ul>
-    <li><a th:href="@{/artist/register}">Artist Registration</a></li>
-    <li><a th:href="@{/artist/login}">Artist Login</a></li>
-</ul>
-
-<h3>Customer</h3>
-<ul>
-    <li><a th:href="@{/customer/register}">Customer Registration</a></li>
-    <li><a th:href="@{/customer/login}">Customer Login</a></li>
-</ul>
-
+        <div class="row">
+            <div class="col-md-4">
+                <h3>Admin</h3>
+                <ul>
+                    <li><a th:href="@{/admin/login}">Admin Login</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3>Artist</h3>
+                <ul>
+                    <li><a th:href="@{/artist/register}">Artist Registration</a></li>
+                    <li><a th:href="@{/artist/login}">Artist Login</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3>Customer</h3>
+                <ul>
+                    <li><a th:href="@{/customer/register}">Customer Registration</a></li>
+                    <li><a th:href="@{/customer/login}">Customer Login</a></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <div th:insert="fragments/footer :: footer"></div>
+    <div th:insert="fragments/footer :: scripts"></div>
 </body>
 </html>
